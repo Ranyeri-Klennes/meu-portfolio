@@ -128,8 +128,7 @@ export default function Home() {
     
     // Theme initialization
     const stored = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const initialDark = stored === 'dark' || (!stored && prefersDark);
+    const initialDark = stored === 'dark'; // Tema escuro apenas se já salvo pelo usuário. Padrão: Claro.
     setIsDark(initialDark);
     document.documentElement.classList.toggle('dark', initialDark);
 
