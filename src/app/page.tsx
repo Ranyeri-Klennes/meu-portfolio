@@ -168,10 +168,14 @@ export default function Home() {
   }, []);
 
   const toggleTheme = () => {
-    const next = !isDark;
-    setIsDark(next);
-    document.documentElement.classList.toggle('dark', next);
-    localStorage.setItem('theme', next ? 'dark' : 'light');
+    const newDark = !isDark;
+    setIsDark(newDark);
+    document.documentElement.classList.toggle('dark', newDark);
+    localStorage.setItem('theme', newDark ? 'dark' : 'light');
+    
+    // Feedback sonoro
+    const audio = new Audio(newDark ? '/switch-on.mp3' : '/switch-off.mp3');
+    audio.play().catch(() => {}); // Ignora erro se o navegador bloquear autoplay sem interação
   };
 
   if (!mounted) return null;
@@ -336,13 +340,13 @@ export default function Home() {
 
           {/* Stat 1 */}
           <div className="bento-card glass-premium rounded-[2rem] p-6 sm:p-8 flex flex-col items-center justify-center text-center">
-            <div className="text-4xl sm:text-5xl font-black text-slate-900 dark:text-white mb-1 sm:mb-2">3<span className="text-blue-600 dark:text-blue-400">+</span></div>
-            <div className="text-xs sm:text-sm font-bold text-slate-500 dark:text-slate-500 uppercase tracking-widest">Anos Exp.</div>
+            <div className="text-4xl sm:text-5xl font-black text-slate-900 dark:text-white mb-1 sm:mb-2"><span className="text-blue-600 dark:text-blue-400">+</span>50</div>
+            <div className="text-xs sm:text-sm font-bold text-slate-500 dark:text-slate-500 uppercase tracking-widest">Processos Otimizados</div>
           </div>
 
           {/* Stat 2 */}
           <div className="bento-card glass-premium rounded-[2rem] p-6 sm:p-8 flex flex-col items-center justify-center text-center">
-            <div className="text-4xl sm:text-5xl font-black text-slate-900 dark:text-white mb-1 sm:mb-2">10<span className="text-blue-600 dark:text-blue-400">+</span></div>
+            <div className="text-4xl sm:text-5xl font-black text-slate-900 dark:text-white mb-1 sm:mb-2"><span className="text-blue-600 dark:text-blue-400">+</span>10</div>
             <div className="text-xs sm:text-sm font-bold text-slate-500 dark:text-slate-500 uppercase tracking-widest">Projetos</div>
           </div>
 
