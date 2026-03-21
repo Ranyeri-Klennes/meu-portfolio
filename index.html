@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ranyeri Klennes | Fullstack Developer & Data Scientist</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,0">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; }
+        /* Ajuste Final Glass Milky: Opacidade alta (0.95) + Borda Sólida + Sombra Difusa */
+        .glass { 
+            background: rgba(255, 255, 255, 0.95); 
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px); 
+            border: 1px solid rgba(255, 255, 255, 1); 
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+        .dark-glass { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .gradient-text { background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .tech-card { transition: all 0.3s ease; }
+        .tech-card:hover { transform: translateY(-5px); }
+        
+        .project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+        .float-anim { animation: float 4s ease-in-out infinite; }
+
+        .nav-scrolled { background: rgba(255, 255, 255, 0.98) !important; backdrop-filter: blur(20px) !important; border-bottom: 1px solid #f1f5f9; }
+        
+        .fade-in-up { opacity: 0; transform: translateY(20px); transition: all 0.6s ease-out; }
+        .fade-in-up.visible { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+
+    
+    <nav id="main-nav" class="fixed top-0 w-full z-50 px-6 py-4 transition-all duration-300">
+        <div class="max-w-7xl mx-auto glass rounded-3xl px-6 py-3 flex justify-between items-center">
+            <div class="font-extrabold text-xl tracking-tight text-slate-900">RK<span class="text-blue-600">.</span></div>
+            <div class="hidden md:flex gap-8 text-sm font-semibold text-slate-800">
+                <a href="#inicio" class="hover:text-blue-600 transition">Início</a>
+                <a href="#sobre" class="hover:text-blue-600 transition">Sobre</a>
+                <a href="#habilidades" class="hover:text-blue-600 transition">Stacks</a>
+                <a href="#projetos" class="hover:text-blue-600 transition">Projetos</a>
+                <a href="#contato" class="bg-blue-600 text-white px-5 py-2 rounded-xl hover:bg-blue-700 transition">Fale Comigo</a>
+            </div>
+            <button class="md:hidden material-symbols-outlined text-slate-900">menu</button>
+        </div>
+    </nav>
+
+    
+    <header id="inicio" class="relative min-h-screen flex items-center pt-20 overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <div class="absolute inset-0 bg-gradient-to-b from-transparent to-slate-50"></div>
+        </div>
+
+        <div class="relative z-10 max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
+            <div class="fade-in-up visible">
+                
+                <div class="inline-flex items-center gap-2 glass bg-green-100/50 text-green-700 px-3 py-1 rounded-full text-xs font-bold mb-6 sm:mb-8 shadow-sm">
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                    </span>
+                    DISPONÍVEL PARA NOVOS DESAFIOS
+                </div>
+                <h1 class="text-5xl md:text-7xl font-extrabold leading-tight mb-6">
+                    Ranyeri <span class="gradient-text">Klennes</span><br>
+                    Alves Cavalcante
+                </h1>
+                <p class="text-lg text-slate-600 max-w-lg mb-8 leading-relaxed">
+                    Desenvolvedor Fullstack com foco em <span class="font-bold text-slate-900">Data Science</span>. 
+                    Transformando dados complexos em soluções inovadoras e automações inteligentes.
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    <a href="#projetos" class="bg-slate-900 text-white px-8 py-4 rounded-2xl font-bold flex items-center gap-2 hover:bg-slate-800 transition shadow-xl shadow-slate-200">
+                        Ver Portfólio <span class="material-symbols-outlined">arrow_forward</span>
+                    </a>
+                    <div class="flex gap-3">
+                        <a href="https://github.com/Ranyeri-Klennes" target="_blank" class="p-4 glass rounded-2xl hover:bg-white transition shadow-sm">
+                            <img src="https://cdn.simpleicons.org/github/0F172A" class="w-6 h-6" alt="GitHub">
+                        </a>
+                        <a href="https://linkedin.com/in/ranyeri-klennes" target="_blank" class="p-4 glass rounded-2xl hover:bg-white transition shadow-sm">
+                            <img src="https://cdn.simpleicons.org/linkedin/0A66C2" class="w-6 h-6" alt="LinkedIn">
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="hidden lg:block relative">
+                <div class="relative z-10 w-full aspect-square bg-white rounded-[60px] shadow-2xl overflow-hidden float-anim p-2">
+                    <div class="w-full h-full bg-slate-200 rounded-[50px] flex items-center justify-center text-slate-400">Foto de Perfil</div>
+                </div>
+                <div class="absolute -top-6 -right-6 w-32 h-32 bg-blue-400/20 blur-3xl rounded-full"></div>
+                <div class="absolute -bottom-10 -left-10 w-48 h-48 bg-purple-400/20 blur-3xl rounded-full"></div>
+            </div>
+        </div>
+    </header>
+
+    
+    <section class="max-w-7xl mx-auto px-6 -mt-20 lg:-mt-32 relative z-20 fade-in-up visible">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="glass p-6 rounded-[32px] text-center shadow-lg border-white/50">
+                <div class="text-3xl font-black text-slate-900 mb-1">3+</div>
+                <div class="text-xs font-bold text-slate-500 uppercase tracking-widest">Anos Exp.</div>
+            </div>
+            <div class="glass p-6 rounded-[32px] text-center shadow-lg border-white/50">
+                <div class="text-3xl font-black text-slate-900 mb-1">10+</div>
+                <div class="text-xs font-bold text-slate-500 uppercase tracking-widest">Repositórios</div>
+            </div>
+            <div class="glass p-6 rounded-[32px] text-center shadow-lg border-white/50">
+                <div class="text-3xl font-black text-slate-900 mb-1">Pós</div>
+                <div class="text-xs font-bold text-slate-500 uppercase tracking-widest">Data Science</div>
+            </div>
+            <div class="glass p-6 rounded-[32px] text-center shadow-lg border-white/50">
+                <div class="text-3xl font-black text-slate-900 mb-1">ADS</div>
+                <div class="text-xs font-bold text-slate-500 uppercase tracking-widest">Graduação</div>
+            </div>
+        </div>
+    </section>
+
+    
+    <section id="sobre" class="py-24 max-w-7xl mx-auto px-6 fade-in-up">
+        <div class="grid lg:grid-cols-2 gap-16 items-center">
+            <div>
+                <h2 class="text-3xl font-extrabold mb-6">Minha Jornada</h2>
+                <div class="space-y-4 text-slate-600 leading-relaxed">
+                    <p>Como desenvolvedor full-stack com 3 anos de experiência, tenho implementado soluções e resolvido problemas complexos nas empresas por onde passei, com destaque para minha atuação na <span class="font-bold text-blue-600">Fade-UFPE</span>.</p>
+                    <p>Graduado em <span class="text-slate-900 font-semibold">Análise e Desenvolvimento de Sistemas</span> e com pós-graduação em <span class="text-slate-900 font-semibold">Ciência de Dados</span>, minha paixão é utilizar habilidades analíticas para criar soluções que não apenas funcionam, mas otimizam negócios.</p>
+                    <div class="bg-blue-50 border-l-4 border-blue-600 p-4 rounded-r-xl italic">
+                        "Estou sempre em busca de novas oportunidades para expandir meu conjunto de habilidades e contribuir em projetos interessantes."
+                    </div>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="dark-glass p-8 rounded-[40px] text-white flex flex-col justify-center">
+                    <span class="material-symbols-outlined text-blue-400 text-4xl mb-4">school</span>
+                    <h4 class="font-bold mb-2">Formação</h4>
+                    <p class="text-xs text-slate-400">Pós-Graduado em Data Science & ADS pela UFPE e instituições parceiras.</p>
+                </div>
+                <div class="bg-white p-8 rounded-[40px] shadow-sm border border-slate-100 flex flex-col justify-center">
+                    <span class="material-symbols-outlined text-purple-600 text-4xl mb-4">rocket_launch</span>
+                    <h4 class="font-bold mb-2">Impacto</h4>
+                    <p class="text-xs text-slate-500">Focado em automação de processos internos e arquitetura escalável.</p>
+                </div>
+                <div class="col-span-2 bg-gradient-to-r from-blue-600 to-indigo-700 p-8 rounded-[40px] text-white">
+                    <div class="flex justify-between items-center mb-4">
+                        <h4 class="font-bold">Especialista Regional</h4>
+                        <span class="bg-white/20 px-2 py-1 rounded text-[10px] uppercase font-bold">Recife/PE</span>
+                    </div>
+                    <p class="text-sm opacity-90">Atuando diretamente no polo tecnológico de Pernambuco, conectando inovação acadêmica ao mercado.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+    <section id="habilidades" class="py-24 bg-slate-900 text-white overflow-hidden relative fade-in-up">
+        <div class="absolute top-0 right-0 p-20 opacity-10 pointer-events-none">
+            <span class="material-symbols-outlined text-[20rem]">code</span>
+        </div>
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">Stack Tecnológica</h2>
+                <p class="text-slate-400 max-w-xl mx-auto">Um arsenal diversificado focado em performance, automação e análise preditiva.</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="tech-card p-8 rounded-[32px] border border-white/10 bg-white/5">
+                    <div class="w-16 h-16 mb-6 bg-blue-500/10 rounded-2xl flex items-center justify-center"><span class="material-symbols-outlined text-blue-400 text-3xl">insights</span></div>
+                    <h3 class="text-xl font-bold mb-4 flex items-center gap-2">Ciência de Dados</h3>
+                    <div class="flex flex-wrap gap-2 mb-6">
+                        <span class="bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full text-xs font-bold">Python</span>
+                        <span class="bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full text-xs font-bold">Data Visualization</span>
+                    </div>
+                    <p class="text-sm text-slate-400 leading-relaxed">Pós-graduação focada em extração de valor e insights estratégicos para tomada de decisão.</p>
+                </div>
+                <div class="tech-card p-8 rounded-[32px] border border-white/10 bg-white/5">
+                    <div class="w-16 h-16 mb-6 bg-purple-500/10 rounded-2xl flex items-center justify-center"><span class="material-symbols-outlined text-purple-400 text-3xl">database</span></div>
+                    <h3 class="text-xl font-bold mb-4 flex items-center gap-2">Backend & C#</h3>
+                    <div class="flex flex-wrap gap-2 mb-6">
+                        <span class="bg-purple-500/10 text-purple-400 px-3 py-1 rounded-full text-xs font-bold">C# / .NET</span>
+                        <span class="bg-purple-500/10 text-purple-400 px-3 py-1 rounded-full text-xs font-bold">Entity Framework</span>
+                    </div>
+                    <p class="text-sm text-slate-400 leading-relaxed">Experiência sólida na construção de sistemas robustos, incluindo o projeto SmartSchool.</p>
+                </div>
+                <div class="tech-card p-8 rounded-[32px] border border-white/10 bg-white/5">
+                    <div class="w-16 h-16 mb-6 bg-orange-500/10 rounded-2xl flex items-center justify-center"><span class="material-symbols-outlined text-orange-400 text-3xl">settings_suggest</span></div>
+                    <h3 class="text-xl font-bold mb-4 flex items-center gap-2">Automação & Dart</h3>
+                    <div class="flex flex-wrap gap-2 mb-6">
+                        <span class="bg-orange-500/10 text-orange-400 px-3 py-1 rounded-full text-xs font-bold">Dart</span>
+                        <span class="bg-orange-500/10 text-orange-400 px-3 py-1 rounded-full text-xs font-bold">Python Scrapers</span>
+                    </div>
+                    <p class="text-sm text-slate-400 leading-relaxed">Desenvolvimento de ferramentas de produtividade para automatizar rotinas massivas.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+    <section id="projetos" class="py-24 max-w-7xl mx-auto px-6 fade-in-up">
+        <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+            <div>
+                <h2 class="text-4xl font-extrabold mb-4">Projetos em Destaque</h2>
+                <p class="text-slate-500 max-w-md">Uma seleção dos meus repositórios públicos e contribuições técnicas mais relevantes.</p>
+            </div>
+            <a href="https://github.com/Ranyeri-Klennes" target="_blank" class="text-blue-600 font-bold flex items-center gap-2 hover:underline">
+                Ver todo o GitHub <span class="material-symbols-outlined">open_in_new</span>
+            </a>
+        </div>
+        <div class="project-grid">
+            <div class="group relative bg-white rounded-[32px] overflow-hidden shadow-sm border border-slate-100 tech-card">
+                <div class="aspect-video bg-slate-100 p-6 flex items-center justify-center overflow-hidden">
+                    <img src="https://cdn.simpleicons.org/python/3776AB" class="w-20 h-20 opacity-20 absolute" alt="Python Bg">
+                    <span class="material-symbols-outlined text-6xl text-slate-300 group-hover:scale-110 transition duration-500">smart_toy</span>
+                </div>
+                <div class="p-8">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-bold">Automatizando-Job</h3>
+                        <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded font-bold">Python</span>
+                    </div>
+                    <p class="text-sm text-slate-500 mb-6">Repositório dedicado a automatizar ações massivas e repetitivas, otimizando o tempo em mais de 60%.</p>
+                    <div class="flex justify-between items-center">
+                        <div class="flex gap-2">
+                            <span class="material-symbols-outlined text-slate-400 text-sm">star</span>
+                        </div>
+                        <a href="#" class="p-3 rounded-xl bg-slate-50 hover:bg-slate-100 transition"><span class="material-symbols-outlined text-slate-900">link</span></a>
+                    </div>
+                </div>
+            </div>
+            <div class="group relative bg-white rounded-[32px] overflow-hidden shadow-sm border border-slate-100 tech-card">
+                <div class="aspect-video bg-slate-100 p-6 flex items-center justify-center overflow-hidden">
+                    <img src="https://cdn.simpleicons.org/dotnet/512BD4" class="w-20 h-20 opacity-20 absolute" alt="C# Bg">
+                    <span class="material-symbols-outlined text-6xl text-slate-300 group-hover:scale-110 transition duration-500">school</span>
+                </div>
+                <div class="p-8">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-bold">SmartSchool</h3>
+                        <span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded font-bold">C# / .NET</span>
+                    </div>
+                    <p class="text-sm text-slate-500 mb-6">Arquitetura de sistema acadêmico robusto utilizando C#, focando em modelagem de dados escalável.</p>
+                    <div class="flex justify-between items-center">
+                        <div class="flex gap-2"></div>
+                        <a href="#" class="p-3 rounded-xl bg-slate-50 hover:bg-slate-100 transition"><span class="material-symbols-outlined text-slate-900">link</span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+    <section class="py-24 bg-white fade-in-up">
+        <div class="max-w-3xl mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-16">Histórico Profissional</h2>
+            <div class="space-y-12">
+                <div class="relative pl-8 border-l-2 border-blue-600">
+                    <div class="absolute -left-2 top-0 w-4 h-4 rounded-full bg-blue-600 shadow-lg shadow-blue-200"></div>
+                    <span class="text-xs font-bold text-blue-600 mb-2 block tracking-widest">PRESENTE - 2022</span>
+                    <h3 class="text-xl font-bold mb-1">Fullstack Developer</h3>
+                    <p class="text-sm font-semibold text-slate-400 mb-4">Fade-UFPE (Fundação de Apoio ao Desenvolvimento)</p>
+                    <p class="text-sm text-slate-500 leading-relaxed">Implementação de soluções digitais e resolução de problemas técnicos estruturais no Recife.</p>
+                </div>
+                <div class="relative pl-8 border-l-2 border-slate-200">
+                    <div class="absolute -left-2 top-0 w-4 h-4 rounded-full bg-slate-200"></div>
+                    <span class="text-xs font-bold text-slate-400 mb-2 block tracking-widest">2023</span>
+                    <h3 class="text-xl font-bold mb-1">Especialização em Ciência de Dados</h3>
+                    <p class="text-sm text-slate-500 leading-relaxed">Pós-Graduação focada em análise estatística e machine learning.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+    <footer id="contato" class="py-24 bg-slate-900 text-white">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <h2 class="text-4xl font-bold mb-6">Vamos construir algo <span class="gradient-text">incrível</span>?</h2>
+            <p class="text-slate-400 mb-12 max-w-xl mx-auto">Seja para uma proposta de projeto ou colaboração, estou à disposição.</p>
+            <div class="flex flex-wrap justify-center gap-6 mb-16">
+                <a href="mailto:ranyeri.klennes@gmail.com" class="flex items-center gap-3 bg-white/5 border border-white/10 px-8 py-4 rounded-2xl hover:bg-white/10 transition">
+                    <span class="material-symbols-outlined text-blue-400">mail</span>
+                    <span class="font-semibold text-sm">ranyeri.klennes@gmail.com</span>
+                </a>
+            </div>
+            <div class="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="text-slate-500 text-sm py-4">
+                    © 2026 Ranyeri Klennes Alves Cavalcante. Todos os direitos reservados.
+                </div>
+                <div class="flex gap-4">
+                    <a href="#" class="text-slate-500 hover:text-white transition">GitHub</a>
+                    <a href="#" class="text-slate-500 hover:text-white transition">Resume PDF</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Nav change background on scroll
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('main-nav');
+            if (window.scrollY > 50) {
+                nav.classList.add('nav-scrolled');
+            } else {
+                nav.classList.remove('nav-scrolled');
+            }
+            
+            // Reveal animations
+            const sections = document.querySelectorAll('.fade-in-up');
+            sections.forEach(sec => {
+                const top = window.scrollY;
+                const offset = sec.offsetTop - 600;
+                if (top >= offset) {
+                    sec.classList.add('visible');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
