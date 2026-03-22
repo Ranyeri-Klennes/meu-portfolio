@@ -8,6 +8,7 @@ export type GitHubRepo = {
   forks_count?: number;
   updated_at?: string;
   topics?: string[];
+  default_branch?: string;
 };
 
 export type PortfolioProps = {

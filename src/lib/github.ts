@@ -99,6 +99,7 @@ export async function getGraphQLData(): Promise<{
                 topic { name }
               }
             }
+            defaultBranchRef { name }
             primaryLanguage { name }
           }
         }
@@ -133,6 +134,7 @@ export async function getGraphQLData(): Promise<{
       forks_count: n.forkCount ?? 0,
       updated_at: n.updatedAt,
       topics: n.repositoryTopics?.nodes?.map((t: any) => t.topic.name) ?? [],
+      default_branch: n.defaultBranchRef?.name ?? 'main',
     }));
     const contributions = json?.data?.user?.contributionsCollection?.contributionCalendar?.totalContributions ?? 0;
     return { pinned, contributions };
@@ -163,13 +165,17 @@ export async function getGitHubData() {
         forks_count: p.forks_count,
         updated_at: p.updated_at,
         topics: p.topics,
+        default_branch: p.default_branch,
       }));
     } else {
       const reposRes = await fetch('https://api.github.com/users/ranyeri-klennes/repos?sort=updated&per_page=6', {
         headers: { Accept: 'application/vnd.github+json' },
         next: { revalidate: 3600 },
       });
-      if (reposRes.ok) rawRepos = await reposRes.json();
+      if (reposRes.ok) {
+        const json = await reposRes.json();
+        rawRepos = json.map((r: any) => ({ ...r, default_branch: r.default_branch }));
+      }
     }
 
     const metadataList = await Promise.all(rawRepos.map((r) => getRepoMetadata(r.name)));
@@ -183,6 +189,7 @@ export async function getGitHubData() {
       forks_count: r.forks_count,
       updated_at: r.updated_at,
       topics: r.topics,
+      default_branch: r.default_branch ?? 'main',
     }));
 
     return {

@@ -94,8 +94,10 @@ export const DetailedProjectsList = ({ repos }: DetailedProjectsListProps) => (
                     Ver Repositório
                   </a>
                   <a 
-                    href={`${repo.html_url}/archive/refs/heads/main.zip`}
+                    href={`https://github.com/ranyeri-klennes/${repo.name}/archive/refs/heads/${repo.default_branch || 'main'}.zip`}
                     className="p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition flex items-center justify-center"
+                    target="_blank"
+                    rel="noreferrer"
                     aria-label="Download Source"
                   >
                     <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6 text-slate-600 dark:text-slate-400" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
