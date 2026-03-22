@@ -77,7 +77,7 @@ export async function getRepoMetadata(repoName: string): Promise<{ image: string
 }
 
 export async function getGraphQLData(): Promise<{
-  pinned: Array<{ name: string; description: string | null; url: string; primaryLanguage: string | null; stargazers_count: number; forks_count: number; updated_at: string; topics: string[] }>;
+  pinned: Array<{ name: string; description: string | null; url: string; primaryLanguage: string | null; stargazers_count: number; forks_count: number; updated_at: string; topics: string[]; default_branch: string }>;
   contributions: number;
 }> {
   const token = process.env.GITHUB_TOKEN;
