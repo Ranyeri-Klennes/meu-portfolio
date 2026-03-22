@@ -1,6 +1,8 @@
 import React from 'react';
+import Link from 'next/link';
 import { GitHubRepo } from '../../types/portfolio';
 import { ProjectCard } from '../ProjectCard';
+import { ArrowIcon } from '../Icons';
 
 type ProjectsProps = {
   repos: GitHubRepo[];
@@ -8,7 +10,16 @@ type ProjectsProps = {
 
 export const Projects = ({ repos }: ProjectsProps) => (
   <section id="projetos" className="py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 reveal relative group/carousel overflow-hidden">
-    <h2 className="text-3xl sm:text-4xl font-extrabold mb-8 sm:mb-12 text-slate-900 dark:text-white">Projetos em Destaque</h2>
+    <div className="flex items-center gap-4 mb-8 sm:mb-12">
+      <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">Projetos em Destaque</h2>
+      <Link 
+        href="/projetos" 
+        className="p-2.5 rounded-full bg-blue-600/10 text-blue-600 hover:bg-blue-600 hover:text-white transition-all shadow-sm group/link-detail"
+        aria-label="Ver todos os projetos detalhados"
+      >
+        <ArrowIcon className="w-5 h-5 transition-transform group-hover/link-detail:translate-x-0.5" />
+      </Link>
+    </div>
     
     {/* Setas Laterais Premium */}
     <button
