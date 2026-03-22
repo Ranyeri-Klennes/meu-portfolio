@@ -1,4 +1,5 @@
-import PortfolioClient, { GitHubRepo } from './PortfolioClient';
+import PortfolioClient from './PortfolioClient';
+import type { GitHubRepo } from '../types/portfolio';
 
 const CURRENT_YEAR = new Date().getFullYear();
 
