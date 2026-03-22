@@ -277,20 +277,16 @@ export default function PortfolioClient({ publicRepos, bio, repos }: Props) {
           <div className="bento-card glass-premium rounded-[2rem] p-7 sm:p-10 flex flex-col justify-between relative overflow-hidden sm:col-span-2 sm:row-span-2">
             <div className="absolute top-0 right-0 w-48 h-48 sm:w-64 sm:h-64 bg-blue-100 dark:bg-blue-900/20 rounded-full mix-blend-multiply filter blur-3xl opacity-50 pointer-events-none"></div>
             <div>
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center mb-4 sm:mb-6">
-                <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6 sm:w-7 sm:h-7 text-blue-600 dark:text-blue-400" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3z"/><path d="M6 21a3 3 0 0 1 3-3h6"/><path d="M6 3a3 3 0 0 1 3 3h6"/><path d="M9 18V6"/><path d="M6 21a3 3 0 0 0-3-3V6a3 3 0 0 0 3-3"/>
-                </svg>
+              <div className="flex items-center gap-3 mb-4 sm:mb-6">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center shrink-0">
+                  <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6 sm:w-7 sm:h-7 text-blue-600 dark:text-blue-400" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3z"/><path d="M6 21a3 3 0 0 1 3-3h6"/><path d="M6 3a3 3 0 0 1 3 3h6"/><path d="M9 18V6"/><path d="M6 21a3 3 0 0 0-3-3V6a3 3 0 0 0 3-3"/>
+                  </svg>
+                </div>
+                <h3 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">Sobre mim</h3>
               </div>
-              <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-slate-900 dark:text-white">Visão Analítica &amp; Código Limpo</h3>
-              <p className="text-slate-600 dark:text-slate-400 leading-relaxed font-medium text-sm sm:text-base">
-                {bio ?? 'Com 3 anos de experiência em engenharia de software e foco em soluções baseadas em dados. Graduado em ADS e pós-graduado em Data Science.'}
-              </p>
-            </div>
-            <div className="mt-6 sm:mt-8">
-              <p className="text-xs sm:text-sm text-slate-500 font-semibold italic border-l-2 border-blue-500 pl-4">
-                &quot;Busco sempre a interseção entre o processamento robusto e a automação escalável.&quot;
-              </p>
+              {/* Área reservada para imagens — será implementada em seguida */}
+              <div className="text-slate-600 dark:text-slate-400 leading-relaxed font-medium text-sm sm:text-base min-h-[60px]" />
             </div>
           </div>
 
@@ -312,9 +308,9 @@ export default function PortfolioClient({ publicRepos, bio, repos }: Props) {
           <div className="bento-card sm:col-span-2 bg-slate-900 dark:bg-slate-800 rounded-[2rem] p-6 sm:p-8 text-white flex justify-between items-center overflow-hidden relative border border-slate-700/50 dark:border-slate-600/50">
             <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-transparent pointer-events-none"></div>
             <div className="z-10">
-              <span className="bg-blue-500/20 text-blue-300 px-3 py-1 rounded-full text-xs font-bold mb-3 sm:mb-4 inline-block">Formação Elite</span>
-              <h4 className="text-lg sm:text-xl font-bold mb-1 sm:mb-2">Data Science &amp; ADS</h4>
-              <p className="text-slate-400 text-xs sm:text-sm max-w-xs">Pós-Graduação e Graduação conectando teoria acadêmica (UFPE) à prática de mercado.</p>
+              <span className="bg-blue-500/20 text-blue-300 px-3 py-1 rounded-full text-xs font-bold mb-3 sm:mb-4 inline-block">hard</span>
+              <h4 className="text-lg sm:text-xl font-bold mb-1 sm:mb-2">Fullstack Data &amp; Automation</h4>
+              <p className="text-slate-400 text-xs sm:text-sm max-w-xs">{bio ?? 'Desenvolvedor .NET | C# | ASP.NET Core | SQL Server | Automação com Python | Pós-graduando em Ciência de Dados'}</p>
             </div>
             <SchoolIcon className="w-16 h-16 sm:w-20 sm:h-20 text-white/10 -rotate-12 z-10 shrink-0" />
           </div>
@@ -369,8 +365,36 @@ export default function PortfolioClient({ publicRepos, bio, repos }: Props) {
 
       {/* ── PROJETOS (GitHub) ── */}
       <section id="projetos" className="py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 overflow-hidden reveal">
-        <h2 className="text-3xl sm:text-4xl font-extrabold mb-8 sm:mb-12 text-slate-900 dark:text-white">Projetos em Destaque</h2>
-        <div className="w-full pause-on-hover">
+        <div className="flex items-center justify-between mb-8 sm:mb-12">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">Projetos em Destaque</h2>
+          <div className="flex gap-2">
+            <button
+              onClick={() => {
+                const el = document.getElementById('carousel-track');
+                if (el) el.scrollBy({ left: -336, behavior: 'smooth' });
+              }}
+              className="p-2.5 rounded-full bg-white/70 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-700 shadow-sm hover:scale-110 transition-all"
+              aria-label="Anterior"
+            >
+              <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5 text-slate-700 dark:text-slate-300" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="15,18 9,12 15,6" />
+              </svg>
+            </button>
+            <button
+              onClick={() => {
+                const el = document.getElementById('carousel-track');
+                if (el) el.scrollBy({ left: 336, behavior: 'smooth' });
+              }}
+              className="p-2.5 rounded-full bg-white/70 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-700 shadow-sm hover:scale-110 transition-all"
+              aria-label="Próximo"
+            >
+              <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5 text-slate-700 dark:text-slate-300" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="9,18 15,12 9,6" />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div id="carousel-track" className="w-full overflow-x-auto pause-on-hover scrollbar-hide" style={{ scrollSnapType: 'x mandatory' }}>
           <div className="flex w-max animate-scroll py-6 sm:py-8">
             {[1, 2].map((key) => (
               <React.Fragment key={key}>
@@ -378,7 +402,7 @@ export default function PortfolioClient({ publicRepos, bio, repos }: Props) {
                   const lang = repo.language ?? 'default';
                   const colors = langColor[lang] ?? langColor.default;
                   return (
-                    <div key={`${key}-${idx}`} className="w-[280px] sm:w-[320px] h-[320px] sm:h-[360px] mx-3 sm:mx-4 group relative glass-card dark:bg-slate-800/80 dark:border-slate-700/50 rounded-[24px] sm:rounded-[28px] overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-700 hover:scale-[1.03] hover:z-20 shrink-0 flex flex-col">
+                    <div key={`${key}-${idx}`} className="w-[280px] sm:w-[320px] h-[320px] sm:h-[360px] mx-3 sm:mx-4 group relative glass-card dark:bg-slate-800/80 dark:border-slate-700/50 rounded-[24px] sm:rounded-[28px] overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-700 hover:scale-[1.03] hover:z-20 shrink-0 flex flex-col" style={{ scrollSnapAlign: 'start' }}>
                       {/* Thumbnail */}
                       <div className="h-44 sm:h-48 bg-gradient-to-br from-slate-100/60 dark:from-slate-700/40 to-slate-200/30 dark:to-slate-800/30 flex items-center justify-center overflow-hidden relative border-b border-white/50 dark:border-slate-700/50">
                         {repo.image ? (
@@ -426,7 +450,7 @@ export default function PortfolioClient({ publicRepos, bio, repos }: Props) {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-4 w-4 bg-blue-600"></span>
             </div>
-            <span className="text-xs font-bold text-blue-600 mb-1 block tracking-widest">MAI 2024 – PRESENTE · 1a 11m</span>
+            <span className="text-xs font-bold text-blue-600 mb-1 block tracking-widest">MAI 2024 – atualmente · 1a 11m</span>
             <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">Desenvolvedor .NET | Analista de Desenvolvimento</h3>
             <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-2">Fade-UFPE · Tempo integral · Recife, PE — No local</p>
             <p className="text-sm text-slate-500 dark:text-slate-500 leading-relaxed">Referência técnica na modernização de sistemas institucionais, liderando a transição de arquiteturas legadas para soluções modernas, escaláveis e seguras. Desenvolvimento Full Stack, APIs RESTful, SQL Server, Clean Code e Gestão de Requisitos.</p>
