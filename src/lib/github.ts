@@ -94,6 +94,7 @@ export async function getGraphQLData(): Promise<{
             stargazers { totalCount }
             forkCount
             updatedAt
+            createdAt
             repositoryTopics(first: 5) {
               nodes {
                 topic { name }
@@ -133,6 +134,7 @@ export async function getGraphQLData(): Promise<{
       stargazers_count: n.stargazers?.totalCount ?? 0,
       forks_count: n.forkCount ?? 0,
       updated_at: n.updatedAt,
+      created_at: n.createdAt,
       topics: n.repositoryTopics?.nodes?.map((t: any) => t.topic.name) ?? [],
       default_branch: n.defaultBranchRef?.name ?? 'main',
     }));
@@ -164,11 +166,12 @@ export async function getGitHubData() {
         stargazers_count: p.stargazers_count,
         forks_count: p.forks_count,
         updated_at: p.updated_at,
+        created_at: p.created_at,
         topics: p.topics,
         default_branch: p.default_branch,
       }));
     } else {
-      const reposRes = await fetch('https://api.github.com/users/ranyeri-klennes/repos?sort=updated&per_page=6', {
+      const reposRes = await fetch('https://api.github.com/users/ranyeri-klennes/repos?sort=created&per_page=6', {
         headers: { Accept: 'application/vnd.github+json' },
         next: { revalidate: 3600 },
       });
@@ -188,9 +191,13 @@ export async function getGitHubData() {
       stargazers_count: r.stargazers_count,
       forks_count: r.forks_count,
       updated_at: r.updated_at,
+      created_at: r.created_at,
       topics: r.topics,
       default_branch: r.default_branch ?? 'main',
     }));
+
+    // Ordenação Cronológica Decrescente
+    repos.sort((a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime());
 
     return {
       publicRepos: (user.public_repos as number) ?? 10,
