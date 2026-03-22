@@ -14,6 +14,7 @@ export type GitHubRepo = {
 type Props = {
   publicRepos: number;
   bio: string | null;
+  contributions: number;
   repos: GitHubRepo[];
 };
 
@@ -68,6 +69,18 @@ const ChartIcon = ({ className }: { className?: string }) => (
     <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
   </svg>
 );
+
+const LayersIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" fill="none" className={className} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m2.6 11.08 8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9"/><path d="m2.6 16.08 8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9"/></svg>
+);
+
+const RocketIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" fill="none" className={className} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.5-1 1-4c2 0 3 0 3 0"/><path d="M15 9V4s-1 .5-4 1c0 2 0 3 0 3"/></svg>
+);
+
+const ShieldCheckIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" fill="none" className={className} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>
+);
 const DatabaseIcon = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 24 24" fill="none" className={className} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
@@ -94,6 +107,141 @@ const langColor: Record<string, { bg: string; text: string }> = {
   default:    { bg: 'bg-slate-100/80 dark:bg-slate-800/50', text: 'text-slate-600 dark:text-slate-400' },
 };
 
+// ── COLLAGE ITEM ──
+type CollageItemProps = {
+  src: string;
+  type: 'image' | 'video';
+  rotation: string;
+  top: string;
+  left: string;
+  width: string;
+  dimmed: boolean;
+  onHoverStart: () => void;
+  onHoverEnd: () => void;
+};
+
+const CollageItem = ({ src, type, rotation, top, left, width, dimmed, onHoverStart, onHoverEnd }: CollageItemProps) => {
+  const [hovered, setHovered] = React.useState(false);
+  const videoRef = React.useRef<HTMLVideoElement>(null);
+
+  const handleEnter = () => { setHovered(true); onHoverStart(); videoRef.current?.play(); };
+  const handleLeave = () => {
+    setHovered(false); onHoverEnd();
+    if (videoRef.current) { videoRef.current.pause(); videoRef.current.currentTime = 0; }
+  };
+
+  return (
+    <div
+      onMouseEnter={handleEnter}
+      onMouseLeave={handleLeave}
+      style={{
+        top, left, width,
+        transform: hovered
+          ? `rotate(${rotation}) scale(2.5)`
+          : `rotate(${rotation}) scale(1)`,
+        zIndex: hovered ? 9999 : dimmed ? 0 : 1,
+        opacity: dimmed ? 0.15 : 1,
+        transition:
+          'top 2.2s cubic-bezier(0.2, 0.8, 0.2, 1), left 2.2s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.6s ease, box-shadow 0.6s ease',
+      }}
+      className={`absolute bg-white dark:bg-zinc-100 cursor-pointer rounded-sm ${
+        hovered ? 'shadow-[0_45px_120px_rgba(0,0,0,0.6)] ring-1 ring-white/20' : 'shadow-[0_5px_20px_rgba(0,0,0,0.22)]'
+      }`}
+    >
+      <div className="overflow-hidden" style={{ padding: '3px 3px 0 3px' }}>
+        {type === 'video' ? (
+          <video ref={videoRef} src={src} muted loop playsInline className="block w-full aspect-[4/3] object-cover" />
+        ) : (
+          <img src={src} alt="" className="block w-full aspect-[4/3] object-cover" loading="lazy" />
+        )}
+      </div>
+      <div style={{ height: '14px' }} />
+    </div>
+  );
+};
+
+// ── STORY COLLAGE: pool + slots + shuffle ──
+const ALL_COLLAGE: Array<{ src: string; type: 'image' | 'video' }> = [
+  { src: '/story-collage (1).jpg',  type: 'image' },
+  { src: '/story-collage (2).jpg',  type: 'image' },
+  { src: '/story-collage (3).jpg',  type: 'image' },
+  { src: '/story-collage (4).jpg',  type: 'image' },
+  { src: '/story-collage (5).jpg',  type: 'image' },
+  { src: '/story-collage (6).jpg',  type: 'image' },
+  { src: '/story-collage (7).png',  type: 'image' },
+  { src: '/story-collage (8).jpg',  type: 'image' },
+  { src: '/story-collage (9).png',  type: 'image' },
+  { src: '/story-collage (1).mp4',  type: 'video' },
+  { src: '/story-collage (2).mp4',  type: 'video' },
+  { src: '/story-collage (3).mp4',  type: 'video' },
+  { src: '/story-collage (4).mp4',  type: 'video' },
+  { src: '/story-collage (6).mp4',  type: 'video' },
+  { src: '/story-collage (8).mp4',  type: 'video' },
+  { src: '/story-collage (9).mp4',  type: 'video' },
+];
+
+function genAllPositions() {
+  const indices = Array.from({ length: 16 }, (_, i) => i);
+  for (let i = indices.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [indices[i], indices[j]] = [indices[j], indices[i]];
+  }
+
+  return ALL_COLLAGE.map((_, idx) => {
+    const slot = indices[idx];
+    const row = Math.floor(slot / 4);
+    const col = slot % 4;
+
+    // Grid centralizado: top 20%->72%, left 5%->73%
+    const rowHeight = 52 / 4;
+    const colWidth  = 68 / 4;
+
+    const baseTop  = 20 + row * rowHeight;
+    const baseLeft = 5  + col * colWidth;
+
+    const jitterTop  = (Math.random() - 0.5) * 8;
+    const jitterLeft = (Math.random() - 0.5) * 8;
+
+    return {
+      top:      `${Math.max(15, Math.min(72, baseTop + jitterTop))}%`,
+      left:     `${Math.max(2,  Math.min(73, baseLeft + jitterLeft))}%`,
+      rotation: `${((Math.random() - 0.5) * 32).toFixed(1)}deg`,
+    };
+  });
+}
+
+const StoryCollage = () => {
+  const [positions, setPositions] = React.useState(() => genAllPositions());
+  const [hoveredIdx, setHoveredIdx] = React.useState<number | null>(null);
+  const pausedRef = React.useRef(false);
+
+  React.useEffect(() => {
+    const id = setInterval(() => {
+      if (!pausedRef.current) setPositions(genAllPositions());
+    }, 5000);
+    return () => clearInterval(id);
+  }, []);
+
+  return (
+    <>
+      {ALL_COLLAGE.map((item, i) => (
+        <CollageItem
+          key={i}
+          src={item.src}
+          type={item.type}
+          rotation={positions[i]?.rotation ?? '0deg'}
+          top={positions[i]?.top ?? '0%'}
+          left={positions[i]?.left ?? '0%'}
+          width="27%"
+          dimmed={hoveredIdx !== null && hoveredIdx !== i}
+          onHoverStart={() => { pausedRef.current = true; setHoveredIdx(i); }}
+          onHoverEnd={() => { pausedRef.current = false; setHoveredIdx(null); }}
+        />
+      ))}
+    </>
+  );
+};
+
 // ── THEME TOGGLE ──
 const ThemeToggle = ({ isDark, onToggle }: { isDark: boolean; onToggle: () => void }) => (
   <button
@@ -118,7 +266,7 @@ const ThemeToggle = ({ isDark, onToggle }: { isDark: boolean; onToggle: () => vo
 );
 
 // ── MAIN CLIENT COMPONENT ──
-export default function PortfolioClient({ publicRepos, bio, repos }: Props) {
+export default function PortfolioClient({ publicRepos, bio, contributions, repos }: Props) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [isDark, setIsDark] = useState(false);
@@ -166,14 +314,6 @@ export default function PortfolioClient({ publicRepos, bio, repos }: Props) {
 
   return (
     <div className="min-h-screen font-body bg-gradient-to-b from-[#f0f4ff] via-[#f8fafc] to-[#f0f4ff] dark:from-[#0f172a] dark:via-[#1e293b] dark:to-[#0f172a] relative antialiased transition-colors duration-[1500ms]">
-
-      {/* SVG Liquid Refraction Filter */}
-      <svg width="0" height="0" style={{ position: 'absolute', pointerEvents: 'none' }}>
-        <filter id="liquid-refraction">
-          <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves={2} result="noise" />
-          <feDisplacementMap in="SourceGraphic" in2="noise" scale={4} />
-        </filter>
-      </svg>
 
       {/* ── AURORA BACKGROUND ── */}
       <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
@@ -273,35 +413,33 @@ export default function PortfolioClient({ publicRepos, bio, repos }: Props) {
         <h2 className="text-2xl sm:text-3xl font-extrabold mb-8 sm:mb-10 tracking-tight text-slate-900 dark:text-white">Minha Jornada</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6" style={{ gridAutoRows: '220px' }}>
 
-          {/* Main card */}
-          <div className="bento-card glass-premium rounded-[2rem] p-7 sm:p-10 flex flex-col justify-between relative overflow-hidden sm:col-span-2 sm:row-span-2">
-            <div className="absolute top-0 right-0 w-48 h-48 sm:w-64 sm:h-64 bg-blue-100 dark:bg-blue-900/20 rounded-full mix-blend-multiply filter blur-3xl opacity-50 pointer-events-none"></div>
-            <div>
-              <div className="flex items-center gap-3 mb-4 sm:mb-6">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center shrink-0">
-                  <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6 sm:w-7 sm:h-7 text-blue-600 dark:text-blue-400" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3z"/><path d="M6 21a3 3 0 0 1 3-3h6"/><path d="M6 3a3 3 0 0 1 3 3h6"/><path d="M9 18V6"/><path d="M6 21a3 3 0 0 0-3-3V6a3 3 0 0 0 3-3"/>
-                  </svg>
-                </div>
-                <h3 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">Sobre mim</h3>
-              </div>
-              {/* Área reservada para imagens — será implementada em seguida */}
-              <div className="text-slate-600 dark:text-slate-400 leading-relaxed font-medium text-sm sm:text-base min-h-[60px]" />
+          {/* Main card — Story Collage */}
+          <div className="bento-card glass-premium dark:bg-slate-800 rounded-[2rem] flex flex-col justify-between relative overflow-hidden sm:col-span-2 sm:row-span-2 min-h-[440px] dark:border dark:border-slate-600/50">
+            {/* Collage layer */}
+            <StoryCollage />
+
+            {/* Label moderno */}
+            <div className="absolute top-4 left-4 z-40">
+              <span className="inline-flex items-center gap-1.5 bg-white/85 dark:bg-slate-900/85 backdrop-blur-md px-3 py-1.5 rounded-full text-xs font-semibold text-slate-700 dark:text-slate-200 shadow-lg border border-white/50 dark:border-white/10 tracking-wide">
+                Sobre mim
+              </span>
             </div>
           </div>
 
-          {/* Stat 1 */}
-          <div className="bento-card glass-premium rounded-[2rem] p-6 sm:p-8 flex flex-col items-center justify-center text-center">
-            <div className="text-4xl sm:text-5xl font-black text-slate-900 dark:text-white mb-1 sm:mb-2"><span className="text-blue-600 dark:text-blue-400">+</span>50</div>
-            <div className="text-xs sm:text-sm font-bold text-slate-500 dark:text-slate-500 uppercase tracking-widest">Processos Otimizados</div>
-          </div>
-
-          {/* Stat 2 — GitHub public_repos */}
-          <div className="bento-card glass-premium rounded-[2rem] p-6 sm:p-8 flex flex-col items-center justify-center text-center">
+          {/* Stat 1 — Contribuições GitHub */}
+          <div className="bento-card glass-premium dark:bg-slate-800 rounded-[2rem] p-6 sm:p-8 flex flex-col items-center justify-center text-center dark:border dark:border-slate-600/50">
             <div className="text-4xl sm:text-5xl font-black text-slate-900 dark:text-white mb-1 sm:mb-2">
-              <span className="text-blue-600 dark:text-blue-400">+</span>{publicRepos}
+              <span className="text-blue-600 dark:text-blue-400">+</span>{contributions > 0 ? contributions : 50}
             </div>
-            <div className="text-xs sm:text-sm font-bold text-slate-500 dark:text-slate-500 uppercase tracking-widest">Projetos</div>
+            <div className="text-xs sm:text-sm font-bold text-slate-500 dark:text-slate-500 uppercase tracking-widest">Contribuições</div>
+          </div>
+
+          {/* Stat 2 — Repositórios públicos */}
+          <div className="bento-card glass-premium dark:bg-slate-800 rounded-[2rem] p-6 sm:p-8 flex flex-col items-center justify-center text-center dark:border dark:border-slate-600/50">
+            <div className="text-4xl sm:text-5xl font-black text-slate-900 dark:text-white mb-1 sm:mb-2">
+              {publicRepos}
+            </div>
+            <div className="text-xs sm:text-sm font-bold text-slate-500 dark:text-slate-500 uppercase tracking-widest">Repositórios</div>
           </div>
 
           {/* Formação */}
@@ -318,91 +456,98 @@ export default function PortfolioClient({ publicRepos, bio, repos }: Props) {
       </section>
 
       {/* ── STACK ── */}
-      <section id="stack" className="py-20 sm:py-32 px-4 sm:px-6 mt-4 sm:mt-12 bg-slate-950 dark:bg-slate-800 text-white rounded-[2rem] sm:rounded-[3rem] max-w-[96%] mx-auto reveal relative overflow-hidden shadow-2xl border border-slate-700/50 dark:border-slate-600/50">
+      <section id="stack" className="py-20 sm:py-32 px-4 sm:px-6 mt-4 sm:mt-12 bg-white/60 backdrop-blur-2xl dark:bg-slate-800 text-slate-900 dark:text-white rounded-[2rem] sm:rounded-[3rem] max-w-[96%] mx-auto reveal relative overflow-hidden shadow-2xl border border-white/80 dark:border-slate-600/50">
         <div className="absolute top-0 right-1/4 w-64 sm:w-96 h-64 sm:h-96 bg-blue-600/20 rounded-full blur-[100px] pointer-events-none opacity-50 dark:opacity-30"></div>
         <div className="max-w-6xl mx-auto relative z-10">
           <div className="text-center mb-12 sm:mb-20">
             <h2 className="text-3xl sm:text-4xl font-extrabold mb-3 sm:mb-4">Arsenal Tecnológico</h2>
-            <p className="text-slate-400 max-w-xl mx-auto text-base sm:text-lg">Ferramentas que utilizo para transformar complexidade em performance.</p>
+            <p className="text-slate-500 dark:text-slate-400 max-w-xl mx-auto text-base sm:text-lg">Ferramentas que utilizo para transformar complexidade em performance.</p>
           </div>
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-8">
-            <div className="glass-dark stack-card-blue p-7 sm:p-10 rounded-[2rem] hover:-translate-y-2 hover:scale-[1.02] transition-all duration-300 group">
-              <div className="w-12 h-12 sm:w-14 sm:h-14 mb-6 sm:mb-8 bg-blue-500/10 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                <ChartIcon className="text-blue-400 w-6 h-6 sm:w-7 sm:h-7" />
+            <div className="glass-dark stack-card-blue p-7 sm:p-10 rounded-[2rem] hover:-translate-y-1.5 hover:scale-[1.01] transition-all duration-700 ease-out group">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 mb-6 sm:mb-8 bg-blue-500/10 rounded-2xl flex items-center justify-center group-hover:scale-105 group-hover:bg-blue-500/20 transition-all duration-500">
+                <LayersIcon className="text-blue-600 dark:text-blue-400 w-6 h-6 sm:w-7 sm:h-7" />
               </div>
-              <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">Ciência de Dados</h3>
+              <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">Full Stack Adaptável</h3>
               <div className="flex flex-wrap gap-2 mb-4 sm:mb-6">
-                <span className="border border-white/10 dark:border-slate-700 bg-white/5 dark:bg-slate-900/50 px-3 py-1.5 rounded-full text-xs font-semibold">Python</span>
-                <span className="border border-white/10 dark:border-slate-700 bg-white/5 dark:bg-slate-900/50 px-3 py-1.5 rounded-full text-xs font-semibold">Data Viz</span>
+                <span className="border border-slate-200 dark:border-slate-700 bg-slate-100/50 dark:bg-slate-900/50 px-3 py-1.5 rounded-full text-xs font-semibold">C# .NET</span>
+                <span className="border border-slate-200 dark:border-slate-700 bg-slate-100/50 dark:bg-slate-900/50 px-3 py-1.5 rounded-full text-xs font-semibold">TypeScript</span>
               </div>
-              <p className="text-sm text-slate-400 leading-relaxed">Extração de valor e insights estratégicos para modelagem de negócios.</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">Construção de soluções end-to-end com rápida adaptação a diferentes ecossistemas e tecnologias.</p>
             </div>
-            <div className="glass-dark stack-card-purple p-7 sm:p-10 rounded-[2rem] hover:-translate-y-2 hover:scale-[1.02] transition-all duration-300 group">
-              <div className="w-12 h-12 sm:w-14 sm:h-14 mb-6 sm:mb-8 bg-purple-500/10 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                <DatabaseIcon className="text-purple-400 w-6 h-6 sm:w-7 sm:h-7" />
+            <div className="glass-dark stack-card-purple p-7 sm:p-10 rounded-[2rem] hover:-translate-y-1.5 hover:scale-[1.01] transition-all duration-700 ease-out group">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 mb-6 sm:mb-8 bg-purple-500/10 rounded-2xl flex items-center justify-center group-hover:scale-105 group-hover:bg-purple-500/20 transition-all duration-500">
+                <RocketIcon className="text-purple-600 dark:text-purple-400 w-6 h-6 sm:w-7 sm:h-7" />
               </div>
-              <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">Backend &amp; APIs</h3>
+              <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">Automação &amp; CI/CD</h3>
               <div className="flex flex-wrap gap-2 mb-4 sm:mb-6">
-                <span className="border border-white/10 dark:border-slate-700 bg-white/5 dark:bg-slate-900/50 px-3 py-1.5 rounded-full text-xs font-semibold">C# .NET</span>
-                <span className="border border-white/10 dark:border-slate-700 bg-white/5 dark:bg-slate-900/50 px-3 py-1.5 rounded-full text-xs font-semibold">SQL</span>
+                <span className="border border-slate-200 dark:border-slate-700 bg-slate-100/50 dark:bg-slate-900/50 px-3 py-1.5 rounded-full text-xs font-semibold">Python</span>
+                <span className="border border-slate-200 dark:border-slate-700 bg-slate-100/50 dark:bg-slate-900/50 px-3 py-1.5 rounded-full text-xs font-semibold">FastAPI</span>
               </div>
-              <p className="text-sm text-slate-400 leading-relaxed">Arquiteturas escaláveis, integrações complexas e sistemas robustos.</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">Otimização de fluxos de trabalho, integração de sistemas e criação de esteiras de deploy contínuo.</p>
             </div>
-            <div className="glass-dark stack-card-orange p-7 sm:p-10 rounded-[2rem] hover:-translate-y-2 hover:scale-[1.02] transition-all duration-300 group sm:col-span-2 md:col-span-1">
-              <div className="w-12 h-12 sm:w-14 sm:h-14 mb-6 sm:mb-8 bg-orange-500/10 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                <BotIcon className="text-orange-400 w-6 h-6 sm:w-7 sm:h-7" />
+            <div className="glass-dark stack-card-orange p-7 sm:p-10 rounded-[2rem] hover:-translate-y-1.5 hover:scale-[1.01] transition-all duration-700 ease-out group sm:col-span-2 md:col-span-1">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 mb-6 sm:mb-8 bg-emerald-500/10 rounded-2xl flex items-center justify-center group-hover:scale-105 group-hover:bg-emerald-500/20 transition-all duration-500">
+                <ShieldCheckIcon className="text-emerald-600 dark:text-emerald-400 w-6 h-6 sm:w-7 sm:h-7" />
               </div>
-              <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">Automação</h3>
+              <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">Qualidade &amp; Cultura Ágil</h3>
               <div className="flex flex-wrap gap-2 mb-4 sm:mb-6">
-                <span className="border border-white/10 dark:border-slate-700 bg-white/5 dark:bg-slate-900/50 px-3 py-1.5 rounded-full text-xs font-semibold">Dart</span>
-                <span className="border border-white/10 dark:border-slate-700 bg-white/5 dark:bg-slate-900/50 px-3 py-1.5 rounded-full text-xs font-semibold">Scrapers</span>
+                <span className="border border-slate-200 dark:border-slate-700 bg-slate-100/50 dark:bg-slate-900/50 px-3 py-1.5 rounded-full text-xs font-semibold">Clean Code</span>
+                <span className="border border-slate-200 dark:border-slate-700 bg-slate-100/50 dark:bg-slate-900/50 px-3 py-1.5 rounded-full text-xs font-semibold">SCRUM</span>
               </div>
-              <p className="text-sm text-slate-400 leading-relaxed">Engenharia de produtividade para automatizar rotinas massivas e repetitivas.</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">Foco em segurança, código limpo, manutenibilidade e entregas contínuas de valor.</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* ── PROJETOS (GitHub) ── */}
-      <section id="projetos" className="py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 overflow-hidden reveal">
-        <div className="flex items-center justify-between mb-8 sm:mb-12">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">Projetos em Destaque</h2>
-          <div className="flex gap-2">
-            <button
-              onClick={() => {
-                const el = document.getElementById('carousel-track');
-                if (el) el.scrollBy({ left: -336, behavior: 'smooth' });
-              }}
-              className="p-2.5 rounded-full bg-white/70 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-700 shadow-sm hover:scale-110 transition-all"
-              aria-label="Anterior"
-            >
-              <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5 text-slate-700 dark:text-slate-300" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="15,18 9,12 15,6" />
-              </svg>
-            </button>
-            <button
-              onClick={() => {
-                const el = document.getElementById('carousel-track');
-                if (el) el.scrollBy({ left: 336, behavior: 'smooth' });
-              }}
-              className="p-2.5 rounded-full bg-white/70 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-700 shadow-sm hover:scale-110 transition-all"
-              aria-label="Próximo"
-            >
-              <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5 text-slate-700 dark:text-slate-300" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="9,18 15,12 9,6" />
-              </svg>
-            </button>
-          </div>
-        </div>
-        <div id="carousel-track" className="w-full overflow-x-auto pause-on-hover scrollbar-hide" style={{ scrollSnapType: 'x mandatory' }}>
+      <section id="projetos" className="py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 reveal relative group/carousel overflow-hidden">
+        <h2 className="text-3xl sm:text-4xl font-extrabold mb-8 sm:mb-12 text-slate-900 dark:text-white">Projetos em Destaque</h2>
+        
+        {/* Setas Laterais Premium */}
+        <button
+          onClick={() => {
+            const el = document.getElementById('carousel-track');
+            if (el) el.scrollBy({ left: -336, behavior: 'smooth' });
+          }}
+          className="absolute left-4 sm:left-8 top-[60%] -translate-y-1/2 z-30 w-12 h-12 flex items-center justify-center rounded-full bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border border-white/40 dark:border-white/10 shadow-2xl opacity-0 group-hover/carousel:opacity-100 transition-all duration-500 hover:scale-110 active:scale-95 hover:bg-white/60 dark:hover:bg-slate-800/60 text-slate-800 dark:text-white group/btn-prev"
+          aria-label="Anterior"
+        >
+          <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5 transition-transform group-hover/btn-prev:-translate-x-0.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="15,18 9,12 15,6" />
+          </svg>
+        </button>
+
+        <button
+          onClick={() => {
+            const el = document.getElementById('carousel-track');
+            if (el) el.scrollBy({ left: 336, behavior: 'smooth' });
+          }}
+          className="absolute right-4 sm:right-8 top-[60%] -translate-y-1/2 z-30 w-12 h-12 flex items-center justify-center rounded-full bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border border-white/40 dark:border-white/10 shadow-2xl opacity-0 group-hover/carousel:opacity-100 transition-all duration-500 hover:scale-110 active:scale-95 hover:bg-white/60 dark:hover:bg-slate-800/60 text-slate-800 dark:text-white group/btn-next"
+          aria-label="Próximo"
+        >
+          <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5 transition-transform group-hover/btn-next:translate-x-0.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="9,18 15,12 9,6" />
+          </svg>
+        </button>
+
+        <div 
+          id="carousel-track"
+          className="w-full overflow-x-auto pause-on-hover [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+          style={{ scrollBehavior: 'smooth' }}
+        >
           <div className="flex w-max animate-scroll py-6 sm:py-8">
-            {[1, 2].map((key) => (
-              <React.Fragment key={key}>
+            {[1, 2, 3].map((set) => (
+              <React.Fragment key={set}>
                 {repos.map((repo, idx) => {
                   const lang = repo.language ?? 'default';
                   const colors = langColor[lang] ?? langColor.default;
                   return (
-                    <div key={`${key}-${idx}`} className="w-[280px] sm:w-[320px] h-[320px] sm:h-[360px] mx-3 sm:mx-4 group relative glass-card dark:bg-slate-800/80 dark:border-slate-700/50 rounded-[24px] sm:rounded-[28px] overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-700 hover:scale-[1.03] hover:z-20 shrink-0 flex flex-col" style={{ scrollSnapAlign: 'start' }}>
+                    <div 
+                      key={`${set}-${idx}`} 
+                      className="w-[280px] sm:w-[320px] h-[320px] sm:h-[360px] mx-3 sm:mx-4 group relative glass-card dark:bg-slate-800 dark:border dark:border-slate-600/50 rounded-[24px] sm:rounded-[28px] overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-700 hover:scale-[1.03] hover:z-20 shrink-0 flex flex-col"
+                    >
                       {/* Thumbnail */}
                       <div className="h-44 sm:h-48 bg-gradient-to-br from-slate-100/60 dark:from-slate-700/40 to-slate-200/30 dark:to-slate-800/30 flex items-center justify-center overflow-hidden relative border-b border-white/50 dark:border-slate-700/50">
                         {repo.image ? (
@@ -450,7 +595,7 @@ export default function PortfolioClient({ publicRepos, bio, repos }: Props) {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-4 w-4 bg-blue-600"></span>
             </div>
-            <span className="text-xs font-bold text-blue-600 mb-1 block tracking-widest">MAI 2024 – atualmente · 1a 11m</span>
+            <span className="text-xs font-bold text-blue-600 mb-1 block tracking-widest">MAI 2024 – ATUALMENTE · 1a 11m</span>
             <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">Desenvolvedor .NET | Analista de Desenvolvimento</h3>
             <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-2">Fade-UFPE · Tempo integral · Recife, PE — No local</p>
             <p className="text-sm text-slate-500 dark:text-slate-500 leading-relaxed">Referência técnica na modernização de sistemas institucionais, liderando a transição de arquiteturas legadas para soluções modernas, escaláveis e seguras. Desenvolvimento Full Stack, APIs RESTful, SQL Server, Clean Code e Gestão de Requisitos.</p>
@@ -515,9 +660,8 @@ export default function PortfolioClient({ publicRepos, bio, repos }: Props) {
         </div>
       </section>
 
-      {/* ── FOOTER / CONTATO ── */}
       <footer id="contato" className="pt-16 pb-8 sm:pt-32 sm:pb-12 px-4 sm:px-6 max-w-5xl mx-auto text-center reveal">
-        <div className="glass-premium rounded-[2rem] sm:rounded-[3rem] p-10 sm:p-16 relative overflow-hidden border border-white/80 dark:border-white/5">
+        <div className="glass-premium dark:bg-slate-800 rounded-[2rem] sm:rounded-[3rem] p-10 sm:p-16 relative overflow-hidden dark:border dark:border-slate-600/50">
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-blue-50/50 dark:to-blue-900/10 pointer-events-none"></div>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-4 sm:mb-6 relative z-10 text-slate-900 dark:text-white tracking-tight">
             Vamos construir algo<br /><span className="text-gradient">incrível juntos?</span>

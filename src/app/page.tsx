@@ -1,29 +1,49 @@
 import PortfolioClient, { GitHubRepo } from './PortfolioClient';
 
+const CURRENT_YEAR = new Date().getFullYear();
+
 // ── GITHUB API ──
 
 async function getRepoImage(repoName: string): Promise<string | null> {
+  const branches = ['main', 'master'];
   try {
-    const readmeUrls = [
-      `https://raw.githubusercontent.com/ranyeri-klennes/${repoName}/main/README.md`,
-      `https://raw.githubusercontent.com/ranyeri-klennes/${repoName}/master/README.md`,
-    ];
-    for (const url of readmeUrls) {
+    for (const branch of branches) {
+      const url = `https://raw.githubusercontent.com/ranyeri-klennes/${repoName}/${branch}/README.md`;
       const res = await fetch(url, { next: { revalidate: 3600 } });
       if (!res.ok) continue;
+
       const text = await res.text();
-      const mdMatch = text.match(/!\[.*?\]\((https?:\/\/[^\s)]+\.(?:png|jpg|jpeg|gif|webp|svg)[^\s)]*)\)/i);
-      if (mdMatch) return mdMatch[1];
-      const htmlMatch = text.match(/<img[^>]+src=["'](https?:\/\/[^"']+\.(?:png|jpg|jpeg|gif|webp|svg)[^"']*)["']/i);
-      if (htmlMatch) return htmlMatch[1];
+      
+      // 1. Markdown Image: ![alt](url)
+      const mdRegex = /!\[.*?\]\((?!https?:\/\/)(.*?\.(?:png|jpg|jpeg|gif|webp|svg))\)|!\[.*?\]\((https?:\/\/.*?\.(?:png|jpg|jpeg|gif|webp|svg))\)/i;
+      const mdMatch = text.match(mdRegex);
+
+      if (mdMatch) {
+        const path = mdMatch[1] || mdMatch[2];
+        if (path.startsWith('http')) return path;
+        return `https://raw.githubusercontent.com/ranyeri-klennes/${repoName}/${branch}/${path.replace(/^\.\//, '')}`;
+      }
+
+      // 2. HTML Image: <img src="url" />
+      const htmlRegex = /<img[^>]+src=["'](?!https?:\/\/)(.*?\.(?:png|jpg|jpeg|gif|webp|svg))["']|<img[^>]+src=["'](https?:\/\/.*?\.(?:png|jpg|jpeg|gif|webp|svg))["']/i;
+      const htmlMatch = text.match(htmlRegex);
+
+      if (htmlMatch) {
+        const path = htmlMatch[1] || htmlMatch[2];
+        if (path.startsWith('http')) return path;
+        return `https://raw.githubusercontent.com/ranyeri-klennes/${repoName}/${branch}/${path.replace(/^\.\//, '')}`;
+      }
     }
-  } catch { /* silently fail */ }
+  } catch { /* silence */ }
   return null;
 }
 
-async function getPinnedRepos(): Promise<Array<{ name: string; description: string | null; url: string; primaryLanguage: string | null }>> {
+async function getGraphQLData(): Promise<{
+  pinned: Array<{ name: string; description: string | null; url: string; primaryLanguage: string | null }>;
+  contributions: number;
+}> {
   const token = process.env.GITHUB_TOKEN;
-  if (!token) return [];
+  if (!token) return { pinned: [], contributions: 0 };
 
   const query = `{
     user(login: "ranyeri-klennes") {
@@ -35,6 +55,11 @@ async function getPinnedRepos(): Promise<Array<{ name: string; description: stri
             url
             primaryLanguage { name }
           }
+        }
+      }
+      contributionsCollection(from: "${CURRENT_YEAR}-01-01T00:00:00Z", to: "${CURRENT_YEAR}-12-31T23:59:59Z") {
+        contributionCalendar {
+          totalContributions
         }
       }
     }
@@ -50,31 +75,35 @@ async function getPinnedRepos(): Promise<Array<{ name: string; description: stri
       body: JSON.stringify({ query }),
       next: { revalidate: 3600 },
     });
-    if (!res.ok) return [];
+    if (!res.ok) return { pinned: [], contributions: 0 };
     const json = await res.json();
     const nodes = json?.data?.user?.pinnedItems?.nodes ?? [];
-    return nodes.map((n: { name: string; description: string | null; url: string; primaryLanguage?: { name: string } | null }) => ({
+    const pinned = nodes.map((n: { name: string; description: string | null; url: string; primaryLanguage?: { name: string } | null }) => ({
       name: n.name,
       description: n.description,
       url: n.url,
       primaryLanguage: n.primaryLanguage?.name ?? null,
     }));
-  } catch { return []; }
+    const contributions: number =
+      json?.data?.user?.contributionsCollection?.contributionCalendar?.totalContributions ?? 0;
+    return { pinned, contributions };
+  } catch { return { pinned: [], contributions: 0 }; }
 }
 
 async function getGitHubData() {
   try {
-    const userRes = await fetch('https://api.github.com/users/ranyeri-klennes', {
-      headers: { Accept: 'application/vnd.github+json' },
-      next: { revalidate: 3600 },
-    });
+    const [userRes, { pinned, contributions }] = await Promise.all([
+      fetch('https://api.github.com/users/ranyeri-klennes', {
+        headers: { Accept: 'application/vnd.github+json' },
+        next: { revalidate: 3600 },
+      }),
+      getGraphQLData(),
+    ]);
     if (!userRes.ok) throw new Error('GitHub user API error');
     const user = await userRes.json();
 
-    // Try pinned repos first (requires GITHUB_TOKEN), fallback to recent
     let rawRepos: Array<{ name: string; description: string | null; html_url: string; language: string | null }> = [];
 
-    const pinned = await getPinnedRepos();
     if (pinned.length > 0) {
       rawRepos = pinned.map((p) => ({
         name: p.name,
@@ -87,9 +116,7 @@ async function getGitHubData() {
         headers: { Accept: 'application/vnd.github+json' },
         next: { revalidate: 3600 },
       });
-      if (reposRes.ok) {
-        rawRepos = await reposRes.json();
-      }
+      if (reposRes.ok) rawRepos = await reposRes.json();
     }
 
     const images = await Promise.all(rawRepos.map((r) => getRepoImage(r.name)));
@@ -104,15 +131,16 @@ async function getGitHubData() {
     return {
       publicRepos: (user.public_repos as number) ?? 10,
       bio: (user.bio as string | null) ?? null,
+      contributions,
       repos,
     };
   } catch {
-    return { publicRepos: 10, bio: null, repos: [] };
+    return { publicRepos: 10, bio: null, contributions: 0, repos: [] };
   }
 }
 
 // ── SERVER COMPONENT (Page) ──
 export default async function Home() {
-  const { publicRepos, bio, repos } = await getGitHubData();
-  return <PortfolioClient publicRepos={publicRepos} bio={bio} repos={repos} />;
+  const { publicRepos, bio, contributions, repos } = await getGitHubData();
+  return <PortfolioClient publicRepos={publicRepos} bio={bio} contributions={contributions} repos={repos} />;
 }
