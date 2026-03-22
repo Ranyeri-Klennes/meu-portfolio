@@ -1,19 +1,15 @@
-# 👨💻 **Ranyeri Klennes Alves Cavalcante** - O Solucionador de Problemas Tech
-
-## 🛠️ **Perfil do Jogador**
-
+# ⚡ Meu Foco é Solucionar Problemas!
+--- 
+### 🧑🏻‍💻 **Dá uma olhada..**
 ---
+### ✨ **STATUS: RESOLVENDO COMPLEXIDADES COM SIMPLICIDADE**
 
-### 🌟 **STATUS: RESOLVENDO COMPLEXIDADES COM SIMPLICIDADE**
-
----
-
-| **Atributo** | **Nível** | **Descrição** |
-| :--- | :---: | :--- |
-| **Foco em Soluções** | 🔥🔥🔥 | Transformar problemas técnicos complexos em soluções práticas e fáceis de usar. |
-| **Facilidade de Uso** | ⚡⚡⚡ | Criar experiências intuitivas e simples, onde a tecnologia desaparece. |
-| **Praticidade** | 🚀🚀🚀 | Desenvolver soluções robustas com o menor atrito possível. |
-| **Detalhamento Técnico** | 🔬🔬🔬 | Mergulhar profundamente na arquitetura e no código para garantir a melhor implementação. |
+|⚔️ **Atributo** | 📜 **Descrição** |
+| :--- | :--- |
+| **Foco em Soluções** | Transformar problemas técnicos complexos em soluções práticas e fáceis de usar. |
+| **Facilidade de Uso** | Criar experiências intuitivas e simples, onde a tecnologia desaparece. |
+| **Praticidade** | Desenvolver soluções robustas com o menor atrito possível. |
+| **Detalhamento Técnico** | Mergulhar profundamente na arquitetura e no código para garantir a melhor implementação. |
 
 ---
 
@@ -24,8 +20,8 @@
 ### **⚔️ Habilidades Ativas**
 
 * **[🎯] Resolução de Problemas:** Transformar o impossível em possível com uma abordagem analítica.
-* **[🧩] Arquitetura de Sistemas:** Criar estruturas sólidas, flexíveis e escaláveis.
-* **[🔧] Detalhamento Técnico:** Implementar com precisão para resolver a causa raiz.
+* **[🎨] Arquitetura de Sistemas:** Criar estruturas sólidas, flexíveis e escaláveis.
+* **[🔬] Detalhamento Técnico:** Implementar com precisão para resolver a causa raiz.
 
 ### **🛡️ Habilidades Passivas**
 
@@ -39,13 +35,13 @@
 
 ---
 
-**[✅] Nível 1: Identificação do Problema**
+**[🔍] Nível 1: Identificação do Problema**
 > Identificação precisa de problemas e oportunidades de melhoria.
 
-**[🔄] Nível 2: Desenvolvimento de Soluções (Em Andamento)**
+**[🔄] Nível 2: Desenvolvimento de Soluções**
 > Criando soluções elegantes, eficientes e escaláveis.
 
-**[⏳] Nível 3: Domínio Técnico (Em Breve)**
+**[♟️] Nível 3: Domínio Técnico**
 > Busca incessante por excelência técnica e maestria.
 
 ---
@@ -75,6 +71,10 @@
 ## 🗣️ **Interaja com o Meu Perfil**
 
 Se você encontrou um problema complexo que precisa de uma solução técnica prática e robusta, envie uma Quest para mim. Estou sempre pronto para o próximo desafio!
+
+---
+
+<img width="1365" height="767" alt="image" src="https://github.com/user-attachments/assets/1dabbc08-3a2a-49ee-9558-c2cc15155d06" />
 
 ---
 
