@@ -28,10 +28,10 @@ export const ALL_COLLAGE: Array<{ src: string; type: 'image' | 'video' }> = [
 
 export const FALLBACK_FEATURED_PROJECTS = [
   {
-    name: 'prototipo-ia-jarvis',
+    name: 'prototipo-ia-SEI',
     description: 'Interface futurista inspirada no JARVIS, combinando computação gráfica 3D reativa por áudio (Three.js), orquestrador de agentes com Function Calling e síntese neural de voz.',
-    html_url: 'https://github.com/Ranyeri-Klennes/prototipo-ia-jarvis',
-    language: 'Python',
+    html_url: 'https://github.com/Ranyeri-Klennes/prototipo-ia-SEI',
+    language: 'JavaScript',
     image: '/projects/prototipo-ia-jarvis.jpg',
     stargazers_count: 1,
     forks_count: 0,
@@ -83,32 +83,6 @@ export const FALLBACK_FEATURED_PROJECTS = [
     created_at: '2026-02-01T00:00:00Z',
     topics: ['nextjs', 'typescript', 'church-management', 'tailwind'],
     default_branch: 'main',
-  },
-  {
-    name: 'PortalCursosInscritos',
-    description: 'Sistema corporativo em .NET C# e arquitetura em camadas para gerenciamento de inscrições em capacitações, módulos financeiros, emissão de relatórios e autenticação integrada.',
-    html_url: 'https://github.com/Ranyeri-Klennes/PortalCursosInscritos',
-    language: 'C#',
-    image: '/projects/PortalCursosInscritos.jpg',
-    stargazers_count: 1,
-    forks_count: 0,
-    updated_at: '2026-02-15T00:00:00Z',
-    created_at: '2025-11-20T00:00:00Z',
-    topics: ['csharp', 'dotnet', 'sql-server', 'adminlte'],
-    default_branch: 'main',
-  },
-  {
-    name: 'migles',
-    description: 'Aplicativo mobile moderno em Flutter e Dart para conexões interpessoais e amizades, com calendário inteligente de datas especiais, sugestões por linguagem do amor e notificações.',
-    html_url: 'https://github.com/Ranyeri-Klennes/migles',
-    language: 'Dart',
-    image: '/projects/migles.jpg',
-    stargazers_count: 1,
-    forks_count: 0,
-    updated_at: '2023-06-22T17:57:13Z',
-    created_at: '2023-05-11T08:58:23Z',
-    topics: ['flutter', 'dart', 'mobile-app', 'social'],
-    default_branch: 'master',
   },
 ];
 

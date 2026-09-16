@@ -60,8 +60,8 @@ export async function getRepoMetadata(repoName: string, owner: string = 'ranyeri
       }
     }
 
-    // Se nenhuma imagem foi encontrada no README ou se é privada, usar a imagem local correspondente
-    if (!image && fallback?.image) {
+    // Se fallback tem imagem definida, priorizar
+    if (fallback?.image) {
       image = fallback.image;
     } else if (!image) {
       image = `/projects/${repoName}.jpg`;

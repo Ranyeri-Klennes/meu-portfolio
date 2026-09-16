@@ -19,7 +19,7 @@ export const ProjectCard = ({ repo, set, idx }: ProjectCardProps) => {
     if (imageList.length <= 1) return;
     const interval = setInterval(() => {
       setActiveImgIdx((prev) => (prev + 1) % imageList.length);
-    }, 3200);
+    }, 2000);
     return () => clearInterval(interval);
   }, [imageList.length]);
 
