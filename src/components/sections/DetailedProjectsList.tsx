@@ -8,6 +8,56 @@ type DetailedProjectsListProps = {
   repos: GitHubRepo[];
 };
 
+const ProjectMediaPreview = ({ repo }: { repo: GitHubRepo }) => {
+  const imageList = repo.images && repo.images.length > 0 ? repo.images : (repo.image ? [repo.image] : []);
+  const [activeIdx, setActiveIdx] = React.useState(0);
+
+  React.useEffect(() => {
+    if (imageList.length <= 1) return;
+    const interval = setInterval(() => {
+      setActiveIdx((prev) => (prev + 1) % imageList.length);
+    }, 2000);
+    return () => clearInterval(interval);
+  }, [imageList.length]);
+
+  return (
+    <div className="relative aspect-video rounded-3xl overflow-hidden glass-premium shadow-2xl border border-white/50 dark:border-slate-800 group-hover:scale-[1.01] transition-all duration-500">
+      {imageList.length > 0 ? (
+        <>
+          {imageList.map((imgSrc, imgI) => (
+            <img 
+              key={imgSrc}
+              src={imgSrc} 
+              alt={`${repo.name} ${imgI + 1}`} 
+              className={`absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-all duration-700 ease-out ${
+                imgI === activeIdx ? 'opacity-100 scale-100 z-10' : 'opacity-0 scale-95 pointer-events-none z-0'
+              }`}
+              loading="lazy"
+            />
+          ))}
+          {imageList.length > 1 && (
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-2 px-3 py-1.5 rounded-full bg-slate-950/60 backdrop-blur-md">
+              {imageList.map((_, dotI) => (
+                <span
+                  key={dotI}
+                  className={`h-2 rounded-full transition-all duration-300 ${
+                    dotI === activeIdx ? 'w-6 bg-blue-400' : 'w-2 bg-white/40'
+                  }`}
+                />
+              ))}
+            </div>
+          )}
+        </>
+      ) : (
+        <div className="w-full h-full bg-slate-100 dark:bg-slate-900 flex items-center justify-center">
+          <CodeIcon className="w-20 h-20 text-slate-300 dark:text-slate-700" />
+        </div>
+      )}
+      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-15" />
+    </div>
+  );
+};
+
 export const DetailedProjectsList = ({ repos }: DetailedProjectsListProps) => (
   <div className="min-h-screen pt-32 pb-20 px-4 sm:px-6 max-w-5xl mx-auto">
     <div className="mb-16">
@@ -35,21 +85,7 @@ export const DetailedProjectsList = ({ repos }: DetailedProjectsListProps) => (
           <section key={idx} className="reveal active group">
             <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
               {/* Media Preview */}
-              <div className="relative aspect-video rounded-3xl overflow-hidden glass-premium shadow-2xl border border-white/50 dark:border-slate-800 group-hover:scale-[1.01] transition-all duration-500">
-                {repo.image ? (
-                  <img 
-                    src={repo.image} 
-                    alt={repo.name} 
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" 
-                    loading="lazy"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-slate-100 dark:bg-slate-900 flex items-center justify-center">
-                    <CodeIcon className="w-20 h-20 text-slate-300 dark:text-slate-700" />
-                  </div>
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              </div>
+              <ProjectMediaPreview repo={repo} />
 
               {/* Data & Content */}
               <div className="flex flex-col">

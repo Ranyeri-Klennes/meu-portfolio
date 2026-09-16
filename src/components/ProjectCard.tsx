@@ -79,9 +79,9 @@ export const ProjectCard = ({ repo, set, idx }: ProjectCardProps) => {
         <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed flex-1">
           {repo.description ?? 'Projeto desenvolvido por Ranyeri Klennes com foco em arquitetura e soluções técnicas.'}
         </p>
-        <div className="flex justify-between items-center mt-3 pt-3 border-t border-slate-100 dark:border-slate-800/80">
+        <div className="flex justify-end items-center gap-2 mt-3 pt-3 border-t border-slate-100 dark:border-slate-800/80">
           <span className="text-[11px] font-semibold text-slate-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-            Explorar projeto →
+            Explorar projeto
           </span>
           <a 
             href={repo.html_url} 
