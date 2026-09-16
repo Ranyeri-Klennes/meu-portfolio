@@ -12,6 +12,16 @@ type ProjectCardProps = {
 export const ProjectCard = ({ repo, set, idx }: ProjectCardProps) => {
   const lang = repo.language ?? 'default';
   const colors = langColor[lang] ?? langColor.default;
+  const imageList = repo.images && repo.images.length > 0 ? repo.images : (repo.image ? [repo.image] : []);
+  const [activeImgIdx, setActiveImgIdx] = React.useState(0);
+
+  React.useEffect(() => {
+    if (imageList.length <= 1) return;
+    const interval = setInterval(() => {
+      setActiveImgIdx((prev) => (prev + 1) % imageList.length);
+    }, 3200);
+    return () => clearInterval(interval);
+  }, [imageList.length]);
 
   return (
     <div 
@@ -20,19 +30,38 @@ export const ProjectCard = ({ repo, set, idx }: ProjectCardProps) => {
     >
       {/* Thumbnail */}
       <div className="h-44 sm:h-48 bg-slate-950/20 dark:bg-slate-950/40 flex items-center justify-center overflow-hidden relative border-b border-white/40 dark:border-slate-800/80">
-        {repo.image ? (
-          <img 
-            src={repo.image} 
-            alt={repo.name} 
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out" 
-            loading="lazy"
-          />
+        {imageList.length > 0 ? (
+          <>
+            {imageList.map((imgSrc, imgI) => (
+              <img 
+                key={imgSrc}
+                src={imgSrc} 
+                alt={`${repo.name} ${imgI + 1}`} 
+                className={`absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-all duration-700 ease-out ${
+                  imgI === activeImgIdx ? 'opacity-100 scale-100 z-10' : 'opacity-0 scale-95 pointer-events-none z-0'
+                }`}
+                loading="lazy"
+              />
+            ))}
+            {imageList.length > 1 && (
+              <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 z-20 flex gap-1.5 px-2 py-1 rounded-full bg-slate-950/60 backdrop-blur-md">
+                {imageList.map((_, dotI) => (
+                  <span
+                    key={dotI}
+                    className={`h-1.5 rounded-full transition-all duration-300 ${
+                      dotI === activeImgIdx ? 'w-4 bg-blue-400' : 'w-1.5 bg-white/40'
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
+          </>
         ) : (
           <div className="text-slate-400 dark:text-slate-600 group-hover:scale-115 group-hover:text-blue-500 transition-all duration-400">
             <CodeIcon className="w-14 h-14 sm:w-16 sm:h-16" />
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-15" />
       </div>
 
       {/* Content */}

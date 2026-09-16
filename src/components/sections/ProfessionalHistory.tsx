@@ -21,10 +21,10 @@ export const ProfessionalHistory = () => (
         <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">Analista de Sistemas Pleno</h3>
         <p className="text-sm font-semibold text-slate-600 dark:text-slate-400 mb-3">Fade-UFPE · Tempo integral · Recife, PE — No local</p>
         <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-          Analista de sistemas, atuando atualmente como <strong>Analista de Sistemas Pleno na Fade-UFPE</strong>. Responsável por arquitetar e mapear a fundo a parte negocial e técnica dos setores vitais da fundação — como Recursos Humanos (RH), Departamento Pessoal (DP) e Projetos —, que formam o verdadeiro coração da instituição. Atuo diretamente na construção de arquiteturas de software, desenvolvimento de novas aplicações e sistemas institucionais, criação de automações para processos operacionais e implementação de integrações completas com sistemas internos e externos, garantindo modernização tecnológica, segurança e alta eficiência operacional.
+          Atuo no TI da Fade-UFPE como Analista de Sistemas Pleno, resolvendo demandas e desenvolvendo soluções para os diferentes setores da instituição. Minha atuação vai além de uma área específica: mapeio regras de negócio e processos técnicos de departamentos como Recursos Humanos (RH) e Departamento Pessoal (DP), além do setor de Projetos — que engloba compras, licitações e a operação da fundação de apoio à UFPE. Desenvolvo novas aplicações e sistemas corporativos, desenho arquiteturas de software, crio automações de processos operacionais e construo integrações entre sistemas internos e externos.
         </p>
         <div className="flex flex-wrap gap-1.5 mt-3.5">
-          {['Arquitetura & Mapeamento', 'RH, DP & Projetos', 'Automações', 'Criação de Aplicações/Sistemas', 'Integrações Internas & Externas', '.NET / C#', 'APIs RESTful'].map((tag) => (
+          {['TI Fade-UFPE', 'Projetos, Compras & Licitações', 'RH & DP', 'Automações de Processos', 'Criação de Sistemas', 'Integrações', '.NET / C#', 'APIs RESTful'].map((tag) => (
             <span key={tag} className="text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-white/90 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-blue-200/50 dark:border-blue-800/40 shadow-xs">
               {tag}
             </span>

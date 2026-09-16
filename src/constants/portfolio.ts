@@ -45,7 +45,12 @@ export const FALLBACK_FEATURED_PROJECTS = [
     description: 'Plataforma de gestão e administração (Admin Dashboard) da rede de eletropostos UZZY Charger. Construído em Next.js (App Router) e TailwindCSS, com telemetria OCPP e split financeiro.',
     html_url: 'https://github.com/Ranyeri-Klennes/uzzy',
     language: 'TypeScript',
-    image: '/projects/uzzy.jpg',
+    image: '/projects/uzzy-1.jpg',
+    images: [
+      '/projects/uzzy-1.jpg',
+      '/projects/uzzy-2.jpg',
+      '/projects/uzzy-3.jpg'
+    ],
     stargazers_count: 1,
     forks_count: 0,
     updated_at: '2026-03-24T00:00:00Z',

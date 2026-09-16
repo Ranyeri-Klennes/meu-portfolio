@@ -238,6 +238,7 @@ export async function getGitHubData() {
         html_url: r.html_url ?? r.url ?? fallback?.html_url ?? `https://github.com/Ranyeri-Klennes/${r.name}`,
         language: r.language ?? r.primaryLanguage ?? fallback?.language ?? 'TypeScript',
         image: metadataList[i].image ?? fallback?.image ?? `/projects/${r.name}.jpg`,
+        images: fallback?.images,
         stargazers_count: r.stargazers_count ?? fallback?.stargazers_count ?? 1,
         forks_count: r.forks_count ?? fallback?.forks_count ?? 0,
         updated_at: r.updated_at ?? fallback?.updated_at ?? new Date().toISOString(),
