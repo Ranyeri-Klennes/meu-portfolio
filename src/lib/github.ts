@@ -2,10 +2,10 @@ import { GitHubRepo } from '../types/portfolio';
 
 const CURRENT_YEAR = new Date().getFullYear();
 
-async function fetchReadme(repoName: string): Promise<string | null> {
-  const branches = ['main', 'master'];
+async function fetchReadme(repoName: string, owner: string = 'ranyeri-klennes', defaultBranch: string = 'main'): Promise<string | null> {
+  const branches = [defaultBranch, 'main', 'master'].filter((v, i, a) => a.indexOf(v) === i);
   for (const branch of branches) {
-    const url = `https://raw.githubusercontent.com/ranyeri-klennes/${repoName}/${branch}/README.md`;
+    const url = `https://raw.githubusercontent.com/${owner}/${repoName}/${branch}/README.md`;
     try {
       const res = await fetch(url, { next: { revalidate: 3600 } });
       if (res.ok) return await res.text();
@@ -14,9 +14,9 @@ async function fetchReadme(repoName: string): Promise<string | null> {
   return null;
 }
 
-export async function getRepoMetadata(repoName: string): Promise<{ image: string | null; readmeDescription: string | null }> {
+export async function getRepoMetadata(repoName: string, owner: string = 'ranyeri-klennes', defaultBranch: string = 'main'): Promise<{ image: string | null; readmeDescription: string | null }> {
   try {
-    const text = await fetchReadme(repoName);
+    const text = await fetchReadme(repoName, owner, defaultBranch);
     if (!text) return { image: null, readmeDescription: null };
 
     // ── Extração de Imagem ──
@@ -25,13 +25,13 @@ export async function getRepoMetadata(repoName: string): Promise<{ image: string
     const mdImgMatch = text.match(mdImgRegex);
     if (mdImgMatch) {
       const path = mdImgMatch[1] || mdImgMatch[2];
-      image = path.startsWith('http') ? path : `https://raw.githubusercontent.com/ranyeri-klennes/${repoName}/main/${path.replace(/^\.\//, '')}`;
+      image = path.startsWith('http') ? path : `https://raw.githubusercontent.com/${owner}/${repoName}/${defaultBranch}/${path.replace(/^\.\//, '')}`;
     } else {
       const htmlImgRegex = /<img[^>]+src=["'](?!https?:\/\/)(.*?\.(?:png|jpg|jpeg|gif|webp|svg))["']|<img[^>]+src=["'](https?:\/\/.*?\.(?:png|jpg|jpeg|gif|webp|svg))["']/i;
       const htmlImgMatch = text.match(htmlImgRegex);
       if (htmlImgMatch) {
         const path = htmlImgMatch[1] || htmlImgMatch[2];
-        image = path.startsWith('http') ? path : `https://raw.githubusercontent.com/ranyeri-klennes/${repoName}/main/${path.replace(/^\.\//, '')}`;
+        image = path.startsWith('http') ? path : `https://raw.githubusercontent.com/${owner}/${repoName}/${defaultBranch}/${path.replace(/^\.\//, '')}`;
       }
     }
 
@@ -157,31 +157,57 @@ export async function getGitHubData() {
 
     let rawRepos: any[] = [];
 
-    if (pinned.length > 0) {
-      rawRepos = pinned.map((p) => ({
-        name: p.name,
-        description: p.description,
-        html_url: p.url,
-        language: p.primaryLanguage,
-        stargazers_count: p.stargazers_count,
-        forks_count: p.forks_count,
-        updated_at: p.updated_at,
-        created_at: p.created_at,
-        topics: p.topics,
-        default_branch: p.default_branch,
-      }));
-    } else {
-      const reposRes = await fetch('https://api.github.com/users/ranyeri-klennes/repos?sort=created&per_page=6', {
+    // Priorizar repositórios marcados com a estrela no GitHub (Starred)
+    try {
+      const starredRes = await fetch('https://api.github.com/users/ranyeri-klennes/starred?per_page=100', {
         headers: { Accept: 'application/vnd.github+json' },
         next: { revalidate: 3600 },
       });
-      if (reposRes.ok) {
-        const json = await reposRes.json();
-        rawRepos = json.map((r: any) => ({ ...r, default_branch: r.default_branch }));
+      if (starredRes.ok) {
+        const starredJson = await starredRes.json();
+        if (Array.isArray(starredJson)) {
+          const userStarred = starredJson.filter((r: any) =>
+            r.owner?.login?.toLowerCase() === 'ranyeri-klennes'
+          );
+          if (userStarred.length > 0) {
+            rawRepos = userStarred.map((r: any) => ({ ...r, default_branch: r.default_branch }));
+          } else if (starredJson.length > 0) {
+            rawRepos = starredJson.filter((r: any) => !r.fork && r.name !== r.owner?.login);
+          }
+        }
+      }
+    } catch {
+      // continua para fallbacks se falhar
+    }
+
+    if (rawRepos.length === 0) {
+      if (pinned.length > 0) {
+        rawRepos = pinned.map((p) => ({
+          name: p.name,
+          description: p.description,
+          html_url: p.url,
+          language: p.primaryLanguage,
+          stargazers_count: p.stargazers_count,
+          forks_count: p.forks_count,
+          updated_at: p.updated_at,
+          created_at: p.created_at,
+          topics: p.topics,
+          default_branch: p.default_branch,
+        }));
+      } else {
+        const reposRes = await fetch('https://api.github.com/users/ranyeri-klennes/repos?sort=updated&per_page=100', {
+          headers: { Accept: 'application/vnd.github+json' },
+          next: { revalidate: 3600 },
+        });
+        if (reposRes.ok) {
+          const json = await reposRes.json();
+          const withStars = json.filter((r: any) => (r.stargazers_count ?? 0) > 0 && !r.fork);
+          rawRepos = withStars.length > 0 ? withStars : json.slice(0, 6);
+        }
       }
     }
 
-    const metadataList = await Promise.all(rawRepos.map((r) => getRepoMetadata(r.name)));
+    const metadataList = await Promise.all(rawRepos.map((r) => getRepoMetadata(r.name, r.owner?.login ?? 'ranyeri-klennes', r.default_branch ?? 'main')));
     const repos: GitHubRepo[] = rawRepos.map((r, i) => ({
       name: r.name,
       description: metadataList[i].readmeDescription ?? r.description,

@@ -7,15 +7,29 @@ export const ProfessionalHistory = () => (
     <div className="space-y-10 sm:space-y-12">
 
       {/* Experiência 1 — atual */}
-      <div className="relative pl-7 sm:pl-8 border-l-2 border-blue-600">
-        <div className="absolute -left-2 top-0 flex h-4 w-4">
+      <div className="relative pl-7 sm:pl-8 py-5 pr-5 sm:pr-6 rounded-2xl border-l-4 border-blue-600 bg-blue-50/60 dark:bg-blue-950/25 border-y border-r border-blue-100/80 dark:border-blue-900/30 shadow-md transition-all">
+        <div className="absolute -left-[10px] top-6 flex h-4 w-4">
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-          <span className="relative inline-flex rounded-full h-4 w-4 bg-blue-600"></span>
+          <span className="relative inline-flex rounded-full h-4 w-4 bg-blue-600 shadow-sm shadow-blue-500"></span>
         </div>
-        <span className="text-xs font-bold text-blue-600 mb-1 block tracking-widest">MAI 2024 – ATUALMENTE · 1a 11m</span>
-        <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">Desenvolvedor .NET | Analista de Desenvolvimento</h3>
-        <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-2">Fade-UFPE · Tempo integral · Recife, PE — No local</p>
-        <p className="text-sm text-slate-500 dark:text-slate-500 leading-relaxed">Referência técnica na modernização de sistemas institucionais, liderando a transição de arquiteturas legadas para soluções modernas, escaláveis e seguras. Desenvolvimento Full Stack, APIs RESTful, SQL Server, Clean Code e Gestão de Requisitos.</p>
+        <div className="flex flex-wrap items-center gap-2 mb-2">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-blue-600 text-white shadow-sm shadow-blue-500/30 uppercase tracking-widest">
+            Cargo Atual
+          </span>
+          <span className="text-xs font-bold text-blue-600 dark:text-blue-400 tracking-wider">MAI 2024 – ATUALMENTE · 1a 11m</span>
+        </div>
+        <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">Analista de Sistemas Pleno</h3>
+        <p className="text-sm font-semibold text-slate-600 dark:text-slate-400 mb-3">Fade-UFPE · Tempo integral · Recife, PE — No local</p>
+        <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+          Analista de sistemas, atuando atualmente como <strong>Analista de Sistemas Pleno na Fade-UFPE</strong>. Responsável por arquitetar e mapear a fundo a parte negocial e técnica dos setores vitais da fundação — como Recursos Humanos (RH), Departamento Pessoal (DP) e Projetos —, que formam o verdadeiro coração da instituição. Atuo diretamente na construção de arquiteturas de software, desenvolvimento de novas aplicações e sistemas institucionais, criação de automações para processos operacionais e implementação de integrações completas com sistemas internos e externos, garantindo modernização tecnológica, segurança e alta eficiência operacional.
+        </p>
+        <div className="flex flex-wrap gap-1.5 mt-3.5">
+          {['Arquitetura & Mapeamento', 'RH, DP & Projetos', 'Automações', 'Criação de Aplicações/Sistemas', 'Integrações Internas & Externas', '.NET / C#', 'APIs RESTful'].map((tag) => (
+            <span key={tag} className="text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-white/90 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-blue-200/50 dark:border-blue-800/40 shadow-xs">
+              {tag}
+            </span>
+          ))}
+        </div>
       </div>
 
       {/* Experiência 2 */}

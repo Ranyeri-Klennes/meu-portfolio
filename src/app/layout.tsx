@@ -6,6 +6,16 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Ranyeri Klennes | Fullstack Developer & Data Scientist",
   description: "Portfólio de Ranyeri Klennes Alves Cavalcante - Desenvolvedor Fullstack e Cientista de Dados.",
+  icons: {
+    icon: [
+      { url: '/icon.svg', type: 'image/svg+xml' },
+      { url: '/icon.png', sizes: '192x192', type: 'image/png' },
+      { url: '/favicon.ico', sizes: 'any' },
+    ],
+    apple: [
+      { url: '/icon.png', sizes: '192x192', type: 'image/png' },
+    ],
+  },
 };
 
 export default function RootLayout({
