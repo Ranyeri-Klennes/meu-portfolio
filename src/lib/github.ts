@@ -1,8 +1,26 @@
 import { GitHubRepo } from '../types/portfolio';
+import { FALLBACK_FEATURED_PROJECTS } from '../constants/portfolio';
 
 const CURRENT_YEAR = new Date().getFullYear();
 
 async function fetchReadme(repoName: string, owner: string = 'ranyeri-klennes', defaultBranch: string = 'main'): Promise<string | null> {
+  const token = process.env.GITHUB_TOKEN;
+  
+  // 1. Tentar API autenticada do GitHub (funciona para repos privados e públicos)
+  if (token) {
+    try {
+      const res = await fetch(`https://api.github.com/repos/${owner}/${repoName}/readme`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/vnd.github.raw',
+        },
+        next: { revalidate: 3600 },
+      });
+      if (res.ok) return await res.text();
+    } catch {}
+  }
+
+  // 2. Tentar raw.githubusercontent.com
   const branches = [defaultBranch, 'main', 'master'].filter((v, i, a) => a.indexOf(v) === i);
   for (const branch of branches) {
     const url = `https://raw.githubusercontent.com/${owner}/${repoName}/${branch}/README.md`;
@@ -15,64 +33,76 @@ async function fetchReadme(repoName: string, owner: string = 'ranyeri-klennes', 
 }
 
 export async function getRepoMetadata(repoName: string, owner: string = 'ranyeri-klennes', defaultBranch: string = 'main'): Promise<{ image: string | null; readmeDescription: string | null }> {
+  const fallback = FALLBACK_FEATURED_PROJECTS.find(p => p.name.toLowerCase() === repoName.toLowerCase());
+
   try {
     const text = await fetchReadme(repoName, owner, defaultBranch);
-    if (!text) return { image: null, readmeDescription: null };
 
-    // ── Extração de Imagem ──
+    // ── Extração da PRIMEIRA Imagem do Readme (Markdown ou HTML, com ou sem extensão) ──
     let image: string | null = null;
-    const mdImgRegex = /!\[.*?\]\((?!https?:\/\/)(.*?\.(?:png|jpg|jpeg|gif|webp|svg))\)|!\[.*?\]\((https?:\/\/.*?\.(?:png|jpg|jpeg|gif|webp|svg))\)/i;
-    const mdImgMatch = text.match(mdImgRegex);
-    if (mdImgMatch) {
-      const path = mdImgMatch[1] || mdImgMatch[2];
-      image = path.startsWith('http') ? path : `https://raw.githubusercontent.com/${owner}/${repoName}/${defaultBranch}/${path.replace(/^\.\//, '')}`;
-    } else {
-      const htmlImgRegex = /<img[^>]+src=["'](?!https?:\/\/)(.*?\.(?:png|jpg|jpeg|gif|webp|svg))["']|<img[^>]+src=["'](https?:\/\/.*?\.(?:png|jpg|jpeg|gif|webp|svg))["']/i;
-      const htmlImgMatch = text.match(htmlImgRegex);
-      if (htmlImgMatch) {
-        const path = htmlImgMatch[1] || htmlImgMatch[2];
-        image = path.startsWith('http') ? path : `https://raw.githubusercontent.com/${owner}/${repoName}/${defaultBranch}/${path.replace(/^\.\//, '')}`;
+    if (text) {
+      const mdImgMatch = text.match(/!\[.*?\]\((https?:\/\/[^\s\)]+|[^\s\)]+?\.(?:png|jpg|jpeg|gif|webp|svg))\)/i);
+      const htmlImgMatch = text.match(/<img[^>]+src=["'](https?:\/\/[^"']+|[^"']+?\.(?:png|jpg|jpeg|gif|webp|svg))["']/i);
+
+      let rawImg: string | null = null;
+      if (mdImgMatch && htmlImgMatch) {
+        rawImg = (mdImgMatch.index! < htmlImgMatch.index!) ? mdImgMatch[1] : htmlImgMatch[1];
+      } else if (mdImgMatch) {
+        rawImg = mdImgMatch[1];
+      } else if (htmlImgMatch) {
+        rawImg = htmlImgMatch[1];
+      }
+
+      if (rawImg) {
+        image = rawImg.startsWith('http')
+          ? rawImg
+          : `https://raw.githubusercontent.com/${owner}/${repoName}/${defaultBranch}/${rawImg.replace(/^\.\//, '')}`;
       }
     }
 
-    // ── Extração de Descrição Inteligente ──
-    const lines = text.split('\n');
+    // Se nenhuma imagem foi encontrada no README ou se é privada, usar a imagem local correspondente
+    if (!image && fallback?.image) {
+      image = fallback.image;
+    } else if (!image) {
+      image = `/projects/${repoName}.jpg`;
+    }
+
+    // ── Extração de Descrição Inteligente do Readme ──
     let readmeDescription: string | null = null;
+    if (text) {
+      const lines = text.split('\n');
+      for (let line of lines) {
+        line = line.trim();
+        if (!line || line.startsWith('#') || line.startsWith('![') || line.startsWith('<img') || line.startsWith('|') || line.startsWith('---') || line.startsWith('```') || line.startsWith(':::')) continue;
+        
+        let clean = line
+          .replace(/\[(.*?)\]\(.*?\)/g, '$1')
+          .replace(/[\*_]{1,3}(.*?)[\*_]{1,3}/g, '$1')
+          .replace(/<[^>]+>/g, '')
+          .replace(/^[>\s\-\*\•\d\.\)]+/, '')
+          .trim();
 
-    for (let line of lines) {
-      line = line.trim();
-      // Pular se: vazio, header (#), imagem (![), badge ([![), citação (>), lista (* / -), tabela (|)
-      if (!line || 
-          line.startsWith('#') || 
-          line.startsWith('![') || 
-          line.startsWith('[![') || 
-          line.startsWith('>') || 
-          line.startsWith('* ') || 
-          line.startsWith('- ') || 
-          line.startsWith('|')) continue;
-
-      // Limpar links [texto](url) -> texto
-      let cleanLine = line.replace(/\[(.*?)\]\(.*?\)/g, '$1');
-      // Limpar negrito/itálico **text** -> text
-      cleanLine = cleanLine.replace(/[\*_]{1,3}(.*?)[\*_]{1,3}/g, '$1');
-      // Limpar badges de texto puro se houver (ex: [badge])
-      cleanLine = cleanLine.replace(/\[.*?\]/g, '');
-
-      if (cleanLine.length > 30) {
-        readmeDescription = cleanLine;
-        break;
+        if (clean.length > 25 && !clean.startsWith('npm') && !clean.startsWith('yarn') && !clean.startsWith('git') && !clean.startsWith('cd ') && !clean.startsWith('First, run')) {
+          readmeDescription = clean;
+          break;
+        }
       }
-    }
 
-    if (readmeDescription) {
-      if (readmeDescription.length > 180) {
+      if (readmeDescription && readmeDescription.length > 180) {
         readmeDescription = readmeDescription.substring(0, 177) + '...';
       }
     }
 
+    if (!readmeDescription && fallback?.description) {
+      readmeDescription = fallback.description;
+    }
+
     return { image, readmeDescription };
   } catch {
-    return { image: null, readmeDescription: null };
+    return {
+      image: fallback?.image ?? `/projects/${repoName}.jpg`,
+      readmeDescription: fallback?.description ?? null
+    };
   }
 }
 
@@ -145,9 +175,13 @@ export async function getGraphQLData(): Promise<{
 
 export async function getGitHubData() {
   try {
+    const token = process.env.GITHUB_TOKEN;
     const [userRes, { pinned, contributions }] = await Promise.all([
       fetch('https://api.github.com/users/ranyeri-klennes', {
-        headers: { Accept: 'application/vnd.github+json' },
+        headers: {
+          Accept: 'application/vnd.github+json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
         next: { revalidate: 3600 },
       }),
       getGraphQLData(),
@@ -158,9 +192,16 @@ export async function getGitHubData() {
     let rawRepos: any[] = [];
 
     // Priorizar repositórios marcados com a estrela no GitHub (Starred)
+    const starredUrl = token
+      ? 'https://api.github.com/user/starred?per_page=100'
+      : 'https://api.github.com/users/ranyeri-klennes/starred?per_page=100';
+
     try {
-      const starredRes = await fetch('https://api.github.com/users/ranyeri-klennes/starred?per_page=100', {
-        headers: { Accept: 'application/vnd.github+json' },
+      const starredRes = await fetch(starredUrl, {
+        headers: {
+          Accept: 'application/vnd.github+json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
         next: { revalidate: 3600 },
       });
       if (starredRes.ok) {
@@ -170,9 +211,7 @@ export async function getGitHubData() {
             r.owner?.login?.toLowerCase() === 'ranyeri-klennes'
           );
           if (userStarred.length > 0) {
-            rawRepos = userStarred.map((r: any) => ({ ...r, default_branch: r.default_branch }));
-          } else if (starredJson.length > 0) {
-            rawRepos = starredJson.filter((r: any) => !r.fork && r.name !== r.owner?.login);
+            rawRepos = userStarred.map((r: any) => ({ ...r, default_branch: r.default_branch || 'main' }));
           }
         }
       }
@@ -180,47 +219,33 @@ export async function getGitHubData() {
       // continua para fallbacks se falhar
     }
 
-    if (rawRepos.length === 0) {
-      if (pinned.length > 0) {
-        rawRepos = pinned.map((p) => ({
-          name: p.name,
-          description: p.description,
-          html_url: p.url,
-          language: p.primaryLanguage,
-          stargazers_count: p.stargazers_count,
-          forks_count: p.forks_count,
-          updated_at: p.updated_at,
-          created_at: p.created_at,
-          topics: p.topics,
-          default_branch: p.default_branch,
-        }));
-      } else {
-        const reposRes = await fetch('https://api.github.com/users/ranyeri-klennes/repos?sort=updated&per_page=100', {
-          headers: { Accept: 'application/vnd.github+json' },
-          next: { revalidate: 3600 },
-        });
-        if (reposRes.ok) {
-          const json = await reposRes.json();
-          const withStars = json.filter((r: any) => (r.stargazers_count ?? 0) > 0 && !r.fork);
-          rawRepos = withStars.length > 0 ? withStars : json.slice(0, 6);
-        }
+    // Mesclar com FALLBACK_FEATURED_PROJECTS para garantir que todos os projetos estrelados (inclusive locais/privados) estejam sempre presentes
+    for (const fb of FALLBACK_FEATURED_PROJECTS) {
+      if (!rawRepos.some(r => r.name.toLowerCase() === fb.name.toLowerCase())) {
+        rawRepos.push(fb);
       }
     }
 
-    const metadataList = await Promise.all(rawRepos.map((r) => getRepoMetadata(r.name, r.owner?.login ?? 'ranyeri-klennes', r.default_branch ?? 'main')));
-    const repos: GitHubRepo[] = rawRepos.map((r, i) => ({
-      name: r.name,
-      description: metadataList[i].readmeDescription ?? r.description,
-      html_url: r.html_url ?? r.url,
-      language: r.language ?? r.primaryLanguage,
-      image: metadataList[i].image,
-      stargazers_count: r.stargazers_count,
-      forks_count: r.forks_count,
-      updated_at: r.updated_at,
-      created_at: r.created_at,
-      topics: r.topics,
-      default_branch: r.default_branch ?? 'main',
-    }));
+    const metadataList = await Promise.all(
+      rawRepos.map((r) => getRepoMetadata(r.name, r.owner?.login ?? 'ranyeri-klennes', r.default_branch ?? 'main'))
+    );
+
+    const repos: GitHubRepo[] = rawRepos.map((r, i) => {
+      const fallback = FALLBACK_FEATURED_PROJECTS.find(p => p.name.toLowerCase() === r.name.toLowerCase());
+      return {
+        name: r.name,
+        description: metadataList[i].readmeDescription ?? r.description ?? fallback?.description ?? 'Projeto desenvolvido por Ranyeri Klennes.',
+        html_url: r.html_url ?? r.url ?? fallback?.html_url ?? `https://github.com/Ranyeri-Klennes/${r.name}`,
+        language: r.language ?? r.primaryLanguage ?? fallback?.language ?? 'TypeScript',
+        image: metadataList[i].image ?? fallback?.image ?? `/projects/${r.name}.jpg`,
+        stargazers_count: r.stargazers_count ?? fallback?.stargazers_count ?? 1,
+        forks_count: r.forks_count ?? fallback?.forks_count ?? 0,
+        updated_at: r.updated_at ?? fallback?.updated_at ?? new Date().toISOString(),
+        created_at: r.created_at ?? fallback?.created_at ?? new Date().toISOString(),
+        topics: r.topics ?? fallback?.topics ?? [],
+        default_branch: r.default_branch ?? fallback?.default_branch ?? 'main',
+      };
+    });
 
     // Ordenação Cronológica Decrescente
     repos.sort((a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime());
@@ -232,6 +257,12 @@ export async function getGitHubData() {
       repos,
     };
   } catch {
-    return { publicRepos: 10, bio: null, contributions: 0, repos: [] };
+    return {
+      publicRepos: 10,
+      bio: null,
+      contributions: 0,
+      repos: FALLBACK_FEATURED_PROJECTS,
+    };
   }
 }
+

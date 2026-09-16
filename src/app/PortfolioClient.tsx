@@ -65,7 +65,7 @@ export default function PortfolioClient({ publicRepos, bio, contributions, repos
   if (!mounted) return null;
 
   return (
-    <div className="min-h-screen font-body bg-gradient-to-b from-[#f0f4ff] via-[#f8fafc] to-[#f0f4ff] dark:from-[#0f172a] dark:via-[#1e293b] dark:to-[#0f172a] relative antialiased transition-colors duration-[1500ms]">
+    <div className="min-h-screen font-body bg-gradient-to-b from-[#f0f4ff] via-[#f8fafc] to-[#f0f4ff] dark:from-[#0f172a] dark:via-[#1e293b] dark:to-[#0f172a] relative antialiased transition-colors duration-300">
 
       {/* Camada de Fundo (Aurora) */}
       <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">

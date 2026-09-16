@@ -56,7 +56,7 @@ export default function ProjetosClient({ repos }: ProjetosClientProps) {
   if (!mounted) return null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#f0f4ff] via-[#f8fafc] to-[#f0f4ff] dark:from-[#0f172a] dark:via-[#1e293b] dark:to-[#0f172a] transition-colors duration-[1500ms] relative">
+    <div className="min-h-screen bg-gradient-to-b from-[#f0f4ff] via-[#f8fafc] to-[#f0f4ff] dark:from-[#0f172a] dark:via-[#1e293b] dark:to-[#0f172a] transition-colors duration-300 relative">
       <Navbar 
         showNavbar={showNavbar} 
         isDark={isDark} 

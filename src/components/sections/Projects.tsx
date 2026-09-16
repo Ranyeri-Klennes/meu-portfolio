@@ -21,14 +21,10 @@ export const Projects = ({ repos }: ProjectsProps) => {
   const dragStartOffsetRef = useRef(0);
   const singleWidthRef = useRef(0);
 
-  // Garante que a lista base tenha cards suficientes para ultrapassar qualquer largura de tela
+  // Lista de repositórios sem duplicações dentro do mesmo conjunto
   const displayRepos = React.useMemo(() => {
     if (!repos || repos.length === 0) return [];
-    let list = [...repos];
-    while (list.length < 8) {
-      list = [...list, ...repos];
-    }
-    return list;
+    return repos;
   }, [repos]);
 
   useEffect(() => {
